@@ -1,0 +1,57 @@
+@import "../styles/_variables.scss";
+:root {
+  --primary-color: #04d69d;
+  --orange-color: #ffaa01;
+  --disabled: #acc2bc;
+  --loading: #287f68;
+  --white: #ffffff;
+  --input: #f7f7f7;
+  --border: #d7d7d7;
+  --red: #ff0000;
+  --placeholder: #a4a4a4;
+  --warning: #ffc400;
+  --error: #eb0303;
+  --title: #000000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: "Poppins";
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+html {
+  font-size: 80%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-geist-sans, Inter), system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: invert();
+  }
+
+  :root {
+    --title: #ffffff;
+  }
+}

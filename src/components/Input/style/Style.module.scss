@@ -1,0 +1,186 @@
+.inputWrapper {
+  position: relative;
+
+  label {
+    display: block;
+    margin-bottom: 0.2rem;
+
+    span {
+      color: var(--red);
+    }
+  }
+
+  .input {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--input);
+    border: 0.1rem solid var(--border);
+    border-radius: 0.4rem;
+    padding: 0 0.7rem;
+    height: 3rem;
+
+    &:focus-within {
+      border-color: var(--primary-color);
+    }
+
+    &.warning {
+      border-color: var(--warning);
+
+      &:focus-within {
+        border-color: var(--warning);
+      }
+    }
+
+    &.error {
+      border-color: var(--error);
+
+      &:focus-within {
+        border-color: var(--error);
+      }
+    }
+
+    input {
+      display: block;
+      font-size: 1rem;
+      padding: 0.7rem 0.7rem 0.7rem 0rem;
+      width: 100%;
+
+      &::placeholder {
+        color: var(--placeholder);
+      }
+    }
+
+    svg {
+      flex-shrink: 0;
+      display: block;
+      margin: 0.7rem 0;
+    }
+
+    .countryPicker {
+      position: relative;
+
+      .phoneCodeWrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .phoneCode {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        // background: var(--surface, #fff);
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .countryList {
+        position: absolute;
+        left: -0.6rem;
+        top: calc(100% + 10px);
+        max-height: 260px;
+        overflow: auto;
+        background: var(--surface, #fff);
+        border: 0.1rem solid var(--border);
+        border-radius: 0.4rem;
+        z-index: 60;
+        width: 320px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        padding: 0.4rem 0;
+      }
+
+      .countrySearchWrap {
+        padding: 0.45rem 0.6rem;
+        border-bottom: 0.1rem solid rgba(0, 0, 0, 0.04);
+      }
+
+      .countrySearch {
+        width: 100%;
+        padding: 0.45rem 0.6rem;
+        border: 0.1rem solid var(--border);
+        border-radius: 0.35rem;
+        font-size: 0.95rem;
+        background: var(--input);
+      }
+
+      .countryItem {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        cursor: pointer;
+      }
+
+      .countryItem:hover {
+        background: rgba(0, 0, 0, 0.03);
+      }
+
+      .flagImg {
+        width: 22px;
+        height: 15px;
+        object-fit: cover;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      .countryInfo {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .countryName {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .countryCode {
+        font-size: 0.85rem;
+        color: var(--placeholder);
+      }
+    }
+  }
+}
+
+.otpInputWrapper {
+  position: relative;
+
+  .otpInput {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    max-width: 270px;
+
+    input {
+      display: block;
+      font-size: 1rem;
+      height: 2.7rem;
+      text-align: center;
+      width: 100%;
+      background: var(--input);
+      border: 0.1rem solid var(--border);
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-radius: 0.4rem;
+
+      &:focus {
+        border-color: var(--primary-color);
+      }
+    }
+  }
+
+  .downWrapper {
+    margin-top: 1rem;
+
+    span {
+      color: var(--primary-color);
+
+      &:first-child {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+}

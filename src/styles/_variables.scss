@@ -1,0 +1,21 @@
+:root {
+  --color-white: #ffffff;
+  --color-primary: #04d69d;
+  --color-disabled: #acc2bc;
+  --color-placeholder: #a4a4a4;
+  --color-text: #707070;
+  --color-black: #000000;
+  --color-orange: #ffaa01;
+
+  --bg: var(--color-white);
+  --panel-bg: #ffffff;
+  --muted: #f3f3f3;
+  --radius: 10px;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0b0b;
+  --panel-bg: #0f1112;
+  --muted: #1a1a1a;
+  --color-text: #d1d1d1;
+}
