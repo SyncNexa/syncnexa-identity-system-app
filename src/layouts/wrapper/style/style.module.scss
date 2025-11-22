@@ -1,0 +1,16 @@
+.dashbaord_layout {
+  position: relative;
+
+  h1 {
+    color: var(--color-title);
+  }
+}
+
+.section {
+  position: relative;
+
+  .title {
+    color: var(--color-title);
+    margin-bottom: 0.5rem;
+  }
+}

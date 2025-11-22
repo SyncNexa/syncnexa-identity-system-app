@@ -14,69 +14,69 @@
   }
 
   &.disabled {
-    color: var(--white);
-    background: var(--disabled) !important;
+    color: #454545 !important;
+    background: var(--color-disabled) !important;
   }
 
   &.primary {
     border-radius: 0.3rem;
-    color: var(--white);
-    background: var(--primary-color);
+    color: var(--color-white);
+    background: var(--color-primary);
 
     &:hover {
       filter: brightness(0.9);
     }
 
     &.loading {
-      background: var(--loading) !important;
+      background: var(--color-loading) !important;
     }
 
     .loader {
-      border-bottom-color: var(--white);
-      border-left-color: var(--white);
-      border-top-color: var(--white);
+      border-bottom-color: var(--color-white);
+      border-left-color: var(--color-white);
+      border-top-color: var(--color-white);
     }
   }
 
   &.secondary {
     border-radius: 2rem;
-    color: var(--white);
-    background: var(--primary-color);
+    color: var(--color-white);
+    background: var(--color-primary);
 
     &:hover {
       filter: brightness(0.9);
     }
 
     &.loading {
-      background: var(--loading) !important;
+      background: var(--color-loading) !important;
     }
 
     .loader {
-      border-bottom-color: var(--white);
-      border-left-color: var(--white);
-      border-top-color: var(--white);
+      border-bottom-color: var(--color-white);
+      border-left-color: var(--color-white);
+      border-top-color: var(--color-white);
     }
   }
 
   &.outline {
     border-radius: 0.3rem;
-    color: var(--primary-color);
+    color: var(--color-primary);
     background: transparent;
-    border: 0.1rem solid var(--primary-color);
+    border: 0.1rem solid var(--color-primary);
 
     &:hover {
       filter: brightness(0.9);
     }
 
     .loader {
-      border-bottom-color: var(--primary-color);
-      border-left-color: var(--primary-color);
-      border-top-color: var(--primary-color);
+      border-bottom-color: var(--color-primary);
+      border-left-color: var(--color-primary);
+      border-top-color: var(--color-primary);
     }
   }
 
   &.text {
-    color: var(--primary-color);
+    color: var(--color-primary);
     background: transparent;
     text-decoration: underline;
 
@@ -107,7 +107,7 @@
 
 /* Color helpers so `color` prop works */
 .green {
-  background: var(--primary-color);
+  background: var(--color-primary);
   color: var(--white);
 }
 
@@ -118,7 +118,7 @@
 
 .light {
   background: transparent;
-  color: var(--primary-color);
+  color: var(--color-primary);
   border: 0.1rem solid var(--border);
 }
 

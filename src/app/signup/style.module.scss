@@ -41,15 +41,15 @@
       align-items: center;
 
       h1 {
-        color: var(--title-color);
+        color: var(--color-title);
       }
 
       a {
-        color: var(--white);
+        color: var(--color-white);
         text-decoration: none;
         font-weight: 500;
         font-size: 1rem;
-        background: var(--primary-color);
+        background: var(--color-primary);
         display: inline-block;
         padding: 0.5rem 2rem;
         border-radius: 0.5rem;

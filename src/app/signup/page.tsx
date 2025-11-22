@@ -4,6 +4,7 @@ import styles from "./style.module.css";
 import { useRouter } from "next/navigation";
 import SyncInput from "@/components/Input/SyncInput";
 import SyncButton from "@/components/Button/SyncButton";
+import { areKeysEmpty } from "@/utils/sanitizers";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -19,6 +20,7 @@ export default function SignupPage() {
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
+
     setForm((f) => ({ ...f, [name]: value }));
   }
 
@@ -134,6 +136,7 @@ export default function SignupPage() {
       <SyncButton
         className={styles.submit}
         onClick={() => router.push("/signup/verify")}
+        disabled={!areKeysEmpty(form, ["phone"])}
       >
         Continue
       </SyncButton>

@@ -4,9 +4,10 @@
   label {
     display: block;
     margin-bottom: 0.2rem;
+    color: var(--color-title);
 
     span {
-      color: var(--red);
+      color: var(--color-red);
     }
   }
 
@@ -14,29 +15,29 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: var(--input);
-    border: 0.1rem solid var(--border);
+    background: var(--color-input);
+    border: 0.1rem solid var(--color-border);
     border-radius: 0.4rem;
     padding: 0 0.7rem;
     height: 3rem;
 
     &:focus-within {
-      border-color: var(--primary-color);
+      border-color: var(--color-primary);
     }
 
     &.warning {
-      border-color: var(--warning);
+      border-color: var(--color-warning);
 
       &:focus-within {
-        border-color: var(--warning);
+        border-color: var(--color-warning);
       }
     }
 
     &.error {
-      border-color: var(--error);
+      border-color: var(--color-error);
 
       &:focus-within {
-        border-color: var(--error);
+        border-color: var(--color-error);
       }
     }
 
@@ -45,9 +46,10 @@
       font-size: 1rem;
       padding: 0.7rem 0.7rem 0.7rem 0rem;
       width: 100%;
+      color: var(--color-title);
 
       &::placeholder {
-        color: var(--placeholder);
+        color: var(--color-placeholder);
       }
     }
 
@@ -75,6 +77,10 @@
         font-size: 0.95rem;
         color: var(--text);
         cursor: pointer;
+
+        .callingCode {
+          color: var(--color-title);
+        }
       }
 
       .countryList {
@@ -83,8 +89,8 @@
         top: calc(100% + 10px);
         max-height: 260px;
         overflow: auto;
-        background: var(--surface, #fff);
-        border: 0.1rem solid var(--border);
+        background: var(--bg, #fff);
+        border: 0.1rem solid var(--color-border);
         border-radius: 0.4rem;
         z-index: 60;
         width: 320px;
@@ -100,10 +106,10 @@
       .countrySearch {
         width: 100%;
         padding: 0.45rem 0.6rem;
-        border: 0.1rem solid var(--border);
+        border: 0.1rem solid var(--color-border);
         border-radius: 0.35rem;
         font-size: 0.95rem;
-        background: var(--input);
+        background: var(--color-input);
       }
 
       .countryItem {
@@ -134,11 +140,14 @@
       .countryName {
         font-weight: 600;
         font-size: 0.95rem;
+        color: var(--color-title);
       }
 
       .countryCode {
         font-size: 0.85rem;
-        color: var(--placeholder);
+        color: var(--color-placeholder);
+        display: block;
+        margin: 0.2rem 0;
       }
     }
   }
@@ -160,13 +169,13 @@
       text-align: center;
       width: 100%;
       background: var(--input);
-      border: 0.1rem solid var(--border);
+      border: 0.1rem solid var(--color-border);
       font-size: 1.2rem;
       font-weight: 800;
       border-radius: 0.4rem;
 
       &:focus {
-        border-color: var(--primary-color);
+        border-color: var(--color-primary);
       }
     }
   }
@@ -175,12 +184,52 @@
     margin-top: 1rem;
 
     span {
-      color: var(--primary-color);
+      color: var(--color-primary);
 
       &:first-child {
         text-decoration: underline;
         cursor: pointer;
       }
     }
+  }
+}
+
+.syncsearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-input);
+  border: 0.1rem solid var(--color-border);
+  border-radius: 3rem;
+  padding: 0 0.7rem;
+  height: 3.5rem;
+  flex: 1 1 60%;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  input {
+    display: block;
+    font-size: 1rem;
+    padding: 1rem;
+    width: 100%;
+    color: var(--color-title);
+
+    &::placeholder {
+      color: var(--color-placeholder);
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  span {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

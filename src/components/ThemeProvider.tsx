@@ -45,6 +45,7 @@ export default function ThemeProvider({
           bottom: 12,
           padding: 8,
           borderRadius: 8,
+          border: "0.15rem solid var(--color-border)",
         }}
       >
         {theme === "light" ? "🌙" : "☀️"}

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Styles from "./style/Style.module.css";
-import Eye from "../../assets/icons/Eye";
-import EyeClosed from "../../assets/icons/EyeClosed";
+import EyeIcon from "../../assets/icons/Eye";
+import EyeClosedIcon from "../../assets/icons/EyeClosed";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 function SyncInput({
@@ -24,6 +24,7 @@ function SyncInput({
   onChange,
   id,
   className,
+  name,
   ...rest
 }: SyncInput) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -213,9 +214,10 @@ function SyncInput({
       const display = formatPhoneDisplay(digits);
       setPhoneDisplay(display);
       onValueChange?.(digits);
+
       onChange?.({
         ...e,
-        target: { ...e.target, value: display },
+        target: { ...e.target, value: display, name },
       } as any);
       return;
     }
@@ -230,14 +232,20 @@ function SyncInput({
       const display = parsed.formatNational();
       setPhoneDisplay(display);
       onValueChange?.(parsed.number);
-      onChange?.({ ...e, target: { ...e.target, value: display } } as any);
+      onChange?.({
+        ...e,
+        target: { ...e.target, value: display, name },
+      } as any);
     } else {
       const limited = digits.slice(0, 15);
       setPhoneDigits(limited);
       const display = formatPhoneDisplay(limited);
       setPhoneDisplay(display);
       onValueChange?.(limited);
-      onChange?.({ ...e, target: { ...e.target, value: display } } as any);
+      onChange?.({
+        ...e,
+        target: { ...e.target, value: display, name },
+      } as any);
     }
   };
 
@@ -277,10 +285,12 @@ function SyncInput({
                         style={{ width: 18, height: 12 }}
                       />
                     ) : null}
-                    <span>{selectedCountry.callingCode}</span>
+                    <span className={Styles.callingCode}>
+                      {selectedCountry.callingCode}
+                    </span>
                   </div>
                 ) : (
-                  <span>+?</span>
+                  <span className={Styles.callingCode}>+?</span>
                 )}
               </button>
               {dropdownOpen && (
@@ -344,7 +354,8 @@ function SyncInput({
             inputMode="tel"
             value={phoneDisplay}
             aria-invalid={invalid ? true : undefined}
-            aria-label={label || "Phone number"}
+            // aria-label={label || "Phone number"}
+            name={name}
             {...rest}
           />
           {rightNode}
@@ -384,13 +395,14 @@ function SyncInput({
                 : (inputType as string)
             }
             aria-invalid={invalid ? true : undefined}
+            name={name}
             {...rest}
           />
           {inputType === "password" ? (
             showPassword ? (
-              <EyeClosed onClick={toggleShowPassword} />
+              <EyeClosedIcon onClick={toggleShowPassword} />
             ) : (
-              <Eye onClick={toggleShowPassword} />
+              <EyeIcon onClick={toggleShowPassword} />
             )
           ) : (
             rightNode

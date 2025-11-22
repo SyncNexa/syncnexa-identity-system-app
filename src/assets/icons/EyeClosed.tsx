@@ -1,5 +1,5 @@
 import React from "react";
-function EyeClosed({
+function EyeClosedIcon({
   color = "#B2B2B2",
   width = 20,
   height = 20,
@@ -39,4 +39,4 @@ function EyeClosed({
   );
 }
 
-export default EyeClosed;
+export default EyeClosedIcon;

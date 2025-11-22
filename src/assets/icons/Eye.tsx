@@ -1,6 +1,6 @@
 import * as React from "react";
 
-function Eye({
+function EyeIcon({
   color = "#B2B2B2",
   width = 20,
   height = 20,
@@ -33,4 +33,4 @@ function Eye({
   );
 }
 
-export default Eye;
+export default EyeIcon;

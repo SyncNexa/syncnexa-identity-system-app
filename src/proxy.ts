@@ -21,7 +21,15 @@ export function proxy(req: NextRequest) {
   }
 
   // Public pages that don't require auth
-  const publicPaths = ["/login", "/signup", "/", "/about", "/signup/verify"];
+  const publicPaths = [
+    "/login",
+    "/signup",
+    "/",
+    "/about",
+    "/signup/verify",
+    "/dashboard",
+    "/dashboard/*",
+  ];
   if (publicPaths.includes(pathname)) return NextResponse.next();
 
   // Check for an auth cookie (named `token` here). Adjust as needed.

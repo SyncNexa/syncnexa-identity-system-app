@@ -1,0 +1,14 @@
+.dashbaord_layout {
+  position: relative;
+}
+.dashbaord_layout h1 {
+  color: var(--color-title);
+}
+
+.section {
+  position: relative;
+}
+.section .title {
+  color: var(--color-title);
+  margin-bottom: 0.5rem;
+}/*# sourceMappingURL=style.module.css.map */
