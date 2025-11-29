@@ -22,6 +22,7 @@
   --color-error: #eb0303;
   --card-color: #f9f9f9;
   --card-stroke-color: #d7d7d7;
+  --color-unread: #edfffa;
 }
 
 [data-theme=dark] {
@@ -37,6 +38,7 @@
   --color-tab-active: #ffffff;
   --card-color: #282828;
   --card-stroke-color: #323232;
+  --color-unread: #212c29;
 }
 
 * {

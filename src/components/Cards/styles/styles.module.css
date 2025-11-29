@@ -41,7 +41,7 @@
   cursor: pointer;
 }
 .notification_card.unread {
-  background: #edfffa;
+  background: var(--color-unread);
 }
 .notification_card .icon {
   width: 3rem;

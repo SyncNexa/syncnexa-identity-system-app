@@ -16,7 +16,7 @@ function RootDashboardLayout({
       <section className={styles.top_area}>
         <div className={styles.top_area_left}>
           <Image
-            src={"/next.svg"}
+            src={"/logo.svg"}
             alt="SyncNexa logo"
             width={100}
             height={20}

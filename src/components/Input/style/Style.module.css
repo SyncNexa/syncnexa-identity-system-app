@@ -171,11 +171,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
   background: var(--color-input);
   border: 0.1rem solid var(--color-border);
   border-radius: 3rem;
-  padding: 0 0.7rem;
   height: 3.5rem;
   flex: 1 1 60%;
 }
@@ -185,7 +183,7 @@
 .syncsearch input {
   display: block;
   font-size: 1rem;
-  padding: 1rem;
+  padding: 1rem 0;
   width: 100%;
   color: var(--color-title);
 }
@@ -198,9 +196,10 @@
 .syncsearch input::-webkit-search-cancel-button {
   display: none;
 }
-.syncsearch span {
+.syncsearch svg {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 1rem;
 }/*# sourceMappingURL=Style.module.css.map */

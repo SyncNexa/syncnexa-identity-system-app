@@ -18,7 +18,6 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  border: 0.1rem solid var(--color-border);
   display: block;
 }
 .dashboard_layout .top_area_left h2 {

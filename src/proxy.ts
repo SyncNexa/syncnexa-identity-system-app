@@ -9,13 +9,16 @@ import type { NextRequest } from "next/server";
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Ignore Next internals and API routes
+  // Ignore Next internals, API routes and static assets (so public/* files are served)
+  // - Next internals: /api, /_next, /static
+  // - favicon and any requests that look like static files (have an extension)
+  const isStaticFile = /\.[a-zA-Z0-9]+$/.test(pathname);
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/static") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.startsWith("/public")
+    pathname === "/favicon.ico" ||
+    isStaticFile
   ) {
     return NextResponse.next();
   }

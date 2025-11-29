@@ -16,8 +16,8 @@
   align-items: center;
   text-decoration: none;
   color: var(--color-text);
-  padding: 1rem 1.5rem;
-  border-radius: 3rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
   flex-shrink: 0;
 }
 .nav .active {

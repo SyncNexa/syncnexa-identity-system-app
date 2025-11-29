@@ -46,7 +46,7 @@
   }
 
   &.unread {
-    background: #edfffa;
+    background: var(--color-unread);
   }
 
   .icon {
