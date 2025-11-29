@@ -8,9 +8,17 @@
 
 .section {
   position: relative;
+  margin: 1rem 0;
 
   .title {
     color: var(--color-title);
     margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  .sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
   }
 }

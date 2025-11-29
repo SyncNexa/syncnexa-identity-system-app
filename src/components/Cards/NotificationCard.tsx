@@ -22,10 +22,6 @@ function NotificationCard({
       role="article"
       aria-labelledby={`notification-${id}-title`}
     >
-      <span className={styles.icon} aria-hidden>
-        {initial}
-      </span>
-
       <div className={styles.content}>
         <div className={styles.header}>
           <p id={`notification-${id}-title`} className={styles.title}>

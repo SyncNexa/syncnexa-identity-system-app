@@ -5,6 +5,7 @@ import React from "react";
 import "../globals.css";
 import SyncSearch from "@/components/Input/SyncSearch";
 import styles from "@/app/dashboard/style/style.module.css";
+import HelpIcon from "@/assets/icons/Help";
 
 function RootDashboardLayout({
   children,
@@ -28,7 +29,12 @@ function RootDashboardLayout({
         <Stroke direction="vertical" color="var(--color-border)" size={1} />
         <div className={styles.top_area_right}>
           <SyncSearch />
-          <div></div>
+          <div className={styles.top_area_right_right}>
+            <button className={styles.green_button}>
+              <HelpIcon width={15} height={15} />
+              HELP
+            </button>
+          </div>
         </div>
       </section>
       <Stroke direction="horizontal" color="var(--color-border)" size={1} />

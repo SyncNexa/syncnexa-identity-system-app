@@ -1,7 +1,7 @@
 interface NotificationPayload {
   id: string;
   type: "access" | "alert" | "system" | "info";
-  typeLabel: "Profile Access" | "Login Alert";
+  typeLabel: "👤 Profile Access" | "🛡️ Login Alert" | "🛠️ System Update";
   message: string;
   time: Date;
   read: boolean;

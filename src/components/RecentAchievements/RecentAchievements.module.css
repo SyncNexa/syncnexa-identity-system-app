@@ -1,0 +1,48 @@
+.wrapper {
+  position: relative;
+}
+.wrapper .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.wrapper .list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.wrapper .list .item {
+  display: flex;
+  gap: 12px;
+  padding: 1rem;
+  align-items: flex-start;
+}
+.wrapper .badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+.wrapper .body {
+  flex: 1;
+}
+.wrapper .rowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.wrapper .itemTitle {
+  margin: 0 0 6px 0;
+  font-weight: 600;
+  color: var(--color-title);
+}
+.wrapper .message {
+  margin: 0 0 10px 0;
+  color: var(--color-text);
+  font-size: var(--ra-body-size);
+}
+.wrapper .time {
+  color: var(--color-placeholder);
+  font-size: var(--ra-time-size);
+}/*# sourceMappingURL=RecentAchievements.module.css.map */
