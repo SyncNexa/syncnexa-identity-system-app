@@ -20,7 +20,10 @@ export default function SignupPage() {
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-
+    if (name === "phone") {
+      if (value.length > 10) {
+      }
+    }
     setForm((f) => ({ ...f, [name]: value }));
   }
 
