@@ -1,0 +1,86 @@
+.container {
+  border: 0.1rem solid var(--color-border);
+  border-radius: 6px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.container .content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.container .content .progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+.container .content .progressSection .circularProgress {
+  position: relative;
+  width: 161px;
+  height: 161px;
+}
+.container .content .progressSection .progressRing {
+  transform: rotate(-90deg);
+}
+.container .content .progressSection .progressRingBg {
+  transition: stroke-dashoffset 0.35s;
+}
+.container .content .progressSection .progressRingCircle {
+  transition: stroke-dashoffset 0.35s;
+}
+.container .content .progressSection .progressText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.container .content .progressSection .percentage {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 27.38px;
+  margin: 0;
+  color: var(--color-title);
+}
+.container .verificationStatus {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16.681px;
+  text-align: center;
+  margin: 0;
+}
+.container .statusPrefix,
+.container .statusSuffix {
+  color: var(--color-text);
+}
+.container .stepsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 17.873px;
+  width: 397px;
+}
+.container .step {
+  border: 0.1rem solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s;
+}
+.container .step.completed {
+  border-color: var(--color-primary);
+}
+.container .step .stepLabel {
+  margin: 0;
+  color: var(--color-placeholder);
+}
+.container .step .stepLabel.completed {
+  color: var(--color-primary);
+}/*# sourceMappingURL=VerificationProgress.module.css.map */

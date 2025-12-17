@@ -3,6 +3,7 @@
 
   h1 {
     color: var(--color-title);
+    font-weight: 600;
   }
 }
 
@@ -13,7 +14,7 @@
   .title {
     color: var(--color-title);
     margin-bottom: 0.5rem;
-    font-weight: 700;
+    font-weight: 500;
   }
   .sectionHeader {
     display: flex;

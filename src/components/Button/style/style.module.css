@@ -86,6 +86,10 @@
     transform: rotate(360deg);
   }
 }
+.button.light {
+  background: var(--color-hover);
+  color: var(--color-primary);
+}
 
 /* Color helpers so `color` prop works */
 .green {

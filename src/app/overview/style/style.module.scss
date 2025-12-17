@@ -66,13 +66,13 @@
 
     &_left {
       flex: 1 1 15%;
-      padding: 1rem;
+      // padding: 1rem;
     }
 
     &_right {
       flex: 1 1 85%;
       height: 100%;
-      padding: 1.5rem;
+      padding: 1rem;
       overflow: auto;
     }
   }
@@ -80,13 +80,19 @@
 
 .overview {
   display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 2rem;
-  margin: 1rem 0;
+  grid-template-columns: 1fr 0.5fr;
+  gap: 31px;
+  margin: 2rem 0;
+  align-items: start;
+}
 
-  .apps_container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar {
+  position: sticky;
+  top: 1rem;
 }

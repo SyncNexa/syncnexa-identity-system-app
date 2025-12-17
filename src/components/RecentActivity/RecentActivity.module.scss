@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #242424;
+  margin: 0;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  span {
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+    color: #4e4d4d;
+    letter-spacing: 0.12px;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activityCard {
+  background: var(--color-hover);
+  border-radius: 6px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.2s;
+
+  &.unread {
+    background: var(--color-unread);
+  }
+}
+
+.activityTitle {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-black);
+  margin: 0;
+}
+
+.activityMessage {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--color-text);
+  line-height: 1.4;
+  min-height: 50px;
+}
+
+.activityTime {
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  color: var(--color-placeholder);
+}

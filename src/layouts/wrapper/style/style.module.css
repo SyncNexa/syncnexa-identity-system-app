@@ -3,6 +3,7 @@
 }
 .dashbaord_layout h1 {
   color: var(--color-title);
+  font-weight: 600;
 }
 
 .section {
@@ -12,7 +13,7 @@
 .section .title {
   color: var(--color-title);
   margin-bottom: 0.5rem;
-  font-weight: 700;
+  font-weight: 500;
 }
 .section .sectionHeader {
   display: flex;
