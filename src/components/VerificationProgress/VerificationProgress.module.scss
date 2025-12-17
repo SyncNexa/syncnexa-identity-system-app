@@ -1,0 +1,101 @@
+.container {
+  border: 0.1rem solid var(--color-border);
+  border-radius: 6px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    .progressSection {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+
+      .circularProgress {
+        position: relative;
+        width: 161px;
+        height: 161px;
+      }
+
+      .progressRing {
+        transform: rotate(-90deg);
+      }
+
+      .progressRingBg {
+        transition: stroke-dashoffset 0.35s;
+      }
+
+      .progressRingCircle {
+        transition: stroke-dashoffset 0.35s;
+      }
+
+      .progressText {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      .percentage {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 27.38px;
+        margin: 0;
+        color: var(--color-title);
+      }
+    }
+  }
+
+  .verificationStatus {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-size: 16.681px;
+    text-align: center;
+    margin: 0;
+  }
+
+  .statusPrefix,
+  .statusSuffix {
+    color: var(--color-text);
+  }
+
+  .stepsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 17.873px;
+    width: 397px;
+  }
+
+  .step {
+    border: 0.1rem solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.2s;
+
+    &.completed {
+      border-color: var(--color-primary);
+    }
+
+    .stepLabel {
+      margin: 0;
+      color: var(--color-placeholder);
+
+      &.completed {
+        color: var(--color-primary);
+      }
+    }
+  }
+}

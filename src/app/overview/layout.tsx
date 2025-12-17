@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 import "../globals.css";
 import SyncSearch from "@/components/Input/SyncSearch";
-import styles from "@/app/dashboard/style/style.module.css";
+import styles from "@/app/overview/style/style.module.css";
 import HelpIcon from "@/assets/icons/Help";
 
 function RootDashboardLayout({

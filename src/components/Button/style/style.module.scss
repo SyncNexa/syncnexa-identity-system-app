@@ -103,6 +103,11 @@
       transform: rotate(360deg);
     }
   }
+
+  &.light {
+    background: var(--color-hover);
+    color: var(--color-primary);
+  }
 }
 
 /* Color helpers so `color` prop works */
