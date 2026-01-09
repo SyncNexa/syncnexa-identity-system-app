@@ -1,7 +1,9 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import styles from "./DigitalStudentID.module.css";
 import Image from "next/image";
 import SyncButton from "../Button";
+import Modal from "../Modal";
 
 type StudentInfo = {
   name: string;
@@ -32,6 +34,7 @@ export default function DigitalStudentID({
   studentInfo = defaultInfo,
   onQRCodeClick,
 }: Props) {
+  const [open, setOpen] = useState(false);
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -83,11 +86,31 @@ export default function DigitalStudentID({
         <SyncButton
           variant="primary"
           buttonStyles={{ height: 40, padding: "0 1.5rem" }}
-          onClick={onQRCodeClick}
+          onClick={() => {
+            setOpen((prev) => !prev);
+          }}
           label="QR CODE"
           color="light"
         />
       </div>
+      <Modal
+        visible={open}
+        title="Scan to Verify Student ID"
+        onClose={() => setOpen((prev) => !prev)}
+      >
+        <div className={styles.modal_content}>
+          <Image src={"/dummy/qr_code.svg"} alt="" width={200} height={200} />
+          <h3 className={styles.name}>Osuagwu Chikanma</h3>
+          <p>Federal University of Technology Owerri</p>
+          <SyncButton
+            label="Download ID"
+            buttonStyles={{ height: 40, width: "100%" }}
+          />
+          <small>
+            Verified by <span>SyncID</span>
+          </small>
+        </div>
+      </Modal>
     </div>
   );
 }

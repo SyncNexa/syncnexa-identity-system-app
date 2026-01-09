@@ -7,6 +7,7 @@
   min-height: 2rem;
   border: 1px solid transparent;
   cursor: pointer;
+  /* Color helpers so `color` prop works */
 }
 .button:disabled {
   cursor: not-allowed;
@@ -20,6 +21,7 @@
   border-radius: 0.3rem;
   color: var(--color-white);
   background: var(--color-primary);
+  padding: 0.5rem 1rem;
 }
 .button.primary:hover {
   filter: brightness(0.9);
@@ -53,6 +55,7 @@
   color: var(--color-primary);
   background: transparent;
   border: 0.1rem solid var(--color-primary);
+  padding: 0.5rem 1rem;
 }
 .button.outline:hover {
   filter: brightness(0.9);
@@ -87,25 +90,35 @@
   }
 }
 .button.light {
-  background: var(--color-hover);
+  background: var(--color-light);
   color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
 }
-
-/* Color helpers so `color` prop works */
-.green {
+.button.green {
   background: var(--color-primary);
-  color: var(--white);
+  color: var(--color-white);
 }
-
-.black {
+.button.black {
   background: #000000;
   color: var(--white);
 }
-
-.light {
-  background: transparent;
-  color: var(--color-primary);
-  border: 0.1rem solid var(--border);
+.button.red {
+  color: var(--color-red);
+  border-radius: 0.3rem;
+  background: var(--color-light);
+  padding: 0.5rem 1rem;
+}
+.button.red:hover {
+  filter: brightness(0.9);
+}
+.button.red.loading {
+  background: var(--color-loading) !important;
+}
+.button.red .loader {
+  border-bottom-color: var(--color-white);
+  border-left-color: var(--color-white);
+  border-top-color: var(--color-white);
 }
 
 /* Accessibility helpers */
@@ -124,4 +137,129 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.action_drop {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.action_drop .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+.action_drop .btn:hover {
+  background-color: var(--color-hover, #f0f0f0);
+}
+.action_drop .drop {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  border-radius: 6px;
+  background: var(--color-input, #f7f7f7);
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  z-index: 10;
+  min-width: 10rem;
+  overflow: hidden;
+}
+.action_drop .drop .drop_item {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--color-title);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+.action_drop .drop .drop_item:hover {
+  background-color: var(--color-hover, #f0f0f0);
+}
+
+.radio {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.15rem solid var(--color-primary);
+  cursor: pointer;
+  position: relative;
+}
+.radio .ellipse {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--color-primary);
+  display: none;
+}
+.radio input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+.radio input:checked ~ .ellipse {
+  display: block;
+}
+
+.toggle {
+  width: 2.9rem;
+  height: 1.6rem;
+  border-radius: 5rem;
+  background: var(--color-input);
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.toggle input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+.toggle input:checked ~ .thumb {
+  transform: translateX(100%);
+}
+.toggle input:checked ~ .color {
+  opacity: 1;
+}
+.toggle .thumb {
+  width: 1.2rem;
+  height: 1.2rem;
+  background: var(--color-white);
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  transition: 0.2s ease-in;
+}
+.toggle .color {
+  position: absolute;
+  left: -5%;
+  top: 0;
+  width: 110%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
 }/*# sourceMappingURL=style.module.css.map */

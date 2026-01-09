@@ -1,5 +1,4 @@
 import * as React from "react";
-import DashboardIcon from "./Dashboard";
 
 function VerificationIcon({ color = "#707070" }: React.SVGProps<SVGElement>) {
   return (

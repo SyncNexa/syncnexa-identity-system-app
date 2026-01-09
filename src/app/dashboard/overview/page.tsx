@@ -1,10 +1,10 @@
-import React from "react";
+"use client";
 import DashboardLayout from "@/layouts/wrapper/DashboardLayout";
 import Section from "@/layouts/wrapper/Section";
 import VerificationProgress from "@/components/VerificationProgress/VerificationProgress";
 import DigitalStudentID from "@/components/DigitalStudentID/DigitalStudentID";
 import RecentActivity from "@/components/RecentActivity/RecentActivity";
-import styles from "@/app/overview/style/style.module.css";
+import styles from "@/app/dashboard/overview/style/style.module.css";
 
 function OverviewPage() {
   return (

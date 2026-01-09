@@ -1,11 +1,11 @@
 export const APP_ROUTES = {
   INDEX: "/",
-  OVERVIEW: "/overview",
-  IDENTITY: "/identity",
-  VERIFICATION: "/verification",
-  DOCUMENTS: "/documents",
-  APPS: "/apps",
-  SECURITY: "/security",
-  SETTINGS: "/settings",
+  OVERVIEW: "/dashboard/overview",
+  IDENTITY: "/dashboard/identity",
+  VERIFICATION: "/dashboard/verification",
+  DOCUMENTS: "/dashboard/documents",
+  APPS: "/dashboard/apps",
+  SECURITY: "/dashboard/security",
+  SETTINGS: "/dashboard/settings",
   LOGOUT: "/logout",
 };

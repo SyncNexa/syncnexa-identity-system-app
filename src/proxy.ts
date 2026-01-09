@@ -31,8 +31,13 @@ export function proxy(req: NextRequest) {
     "/about",
     "/signup/verify",
     "/dashboard",
-    "/dashboard/*",
-    "/overview",
+    "/dashboard/overview",
+    "/dashboard/identity",
+    "/dashboard/verification",
+    "/dashboard/documents",
+    "/dashboard/apps",
+    "/dashboard/security",
+    "/dashboard/settings",
   ];
   if (publicPaths.includes(pathname)) return NextResponse.next();
 

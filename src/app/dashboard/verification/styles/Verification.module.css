@@ -1,0 +1,66 @@
+.verification {
+  width: 100%;
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.verification .card {
+  border: 0.1rem solid var(--color-border);
+  border-radius: 0.5rem;
+}
+.verification .card .header {
+  padding: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.1rem solid var(--color-border);
+}
+.verification .card .header .label {
+  color: var(--color-title);
+}
+.verification .card .header small {
+  color: var(--color-text);
+}
+.verification .card .body {
+  padding: 1.3rem;
+}
+.verification .card .body .label {
+  color: var(--color-title);
+}
+.verification .card .body ul {
+  padding: 0 1rem;
+}
+.verification .card .body ul li {
+  color: var(--color-text);
+}
+.verification .card .info_wrapper {
+  padding: 0 1.3rem;
+}
+.verification .card .info_wrapper .right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.verification .card .info_wrapper .right em {
+  color: var(--color-title);
+}
+.verification .card .info_wrapper .left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.verification .card .info_wrapper .left em {
+  color: var(--color-error);
+}
+.verification .card .info_wrapper .left .tooltip {
+  flex: 1;
+  justify-content: flex-start;
+}
+.verification .card .bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.3rem;
+}/*# sourceMappingURL=Verification.module.css.map */

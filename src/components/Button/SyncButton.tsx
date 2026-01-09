@@ -17,11 +17,11 @@ const SyncButton = React.forwardRef<HTMLButtonElement, SyncButton>(
     } = props;
     const classNames = [
       Styles.button,
-      Styles[variant],
-      Styles[color],
       loading ? Styles.loading : "",
       disabled ? Styles.disabled : "",
       className || "",
+      Styles[color],
+      Styles[variant],
     ]
       .filter(Boolean)
       .join(" ");

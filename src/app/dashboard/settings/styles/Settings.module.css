@@ -1,0 +1,65 @@
+.settings {
+  position: relative;
+  margin: 2rem 0;
+}
+.settings .preferences {
+  padding: 1.5rem;
+}
+.settings .preferences .section {
+  margin: 0.7rem 0;
+  padding: 0.7rem 0;
+  border-bottom: 0.1rem solid var(--color-border);
+}
+.settings .preferences .section .title {
+  margin-bottom: 1rem;
+  color: var(--color-title);
+}
+.settings .preferences .section .cat {
+  position: relative;
+  max-width: 70rem;
+}
+.settings .preferences .section .cat_title {
+  color: var(--color-text);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.settings .preferences .section .cat .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+.settings .preferences .section .cat .row p {
+  color: var(--color-title);
+}
+.settings .compliance .wrapper {
+  padding: 1.5rem;
+  border-bottom: 0.1rem solid var(--color-border);
+}
+.settings .compliance .wrapper h4 {
+  color: var(--color-title);
+  margin-bottom: 0.5rem;
+}
+.settings .compliance .wrapper p {
+  color: var(--color-title);
+  margin-bottom: 1rem;
+}
+.settings .compliance .wrapper small {
+  color: var(--color-text);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.settings .compliance .summary {
+  margin-top: 0.5rem;
+  padding: 1.5rem;
+}
+.settings .compliance .summary .data_row {
+  margin: 0.5rem 0;
+}
+.settings .compliance .summary .data_row small {
+  color: var(--color-text);
+  display: block;
+}
+.settings .compliance .summary .data_row p {
+  color: var(--color-title);
+}/*# sourceMappingURL=Settings.module.css.map */
