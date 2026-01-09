@@ -61,3 +61,22 @@
 .value {
   color: var(--color-black);
 }
+
+.modal_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .name {
+    font-size: 1.2rem;
+  }
+
+  small {
+    color: #a1a1a1;
+
+    span {
+      color: #04d69d;
+    }
+  }
+}

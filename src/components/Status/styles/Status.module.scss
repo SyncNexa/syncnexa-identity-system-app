@@ -1,0 +1,20 @@
+.format_status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+
+  .VERIFIED {
+    color: #04d69d;
+  }
+
+  .PENDING {
+    color: #ffbc2c;
+  }
+
+  .NOT_UPLOADED,
+  .NOT_VERIFIED,
+  .FAILED {
+    color: #d60404;
+  }
+}

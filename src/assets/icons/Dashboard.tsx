@@ -10,7 +10,7 @@ function DashboardIcon({ color = "#707070" }: React.SVGProps<SVGElement>) {
       viewBox="0 0 16 16"
     >
       <g
-        stroke="#fff"
+        stroke={color}
         strokeLinecap="round"
         strokeLinejoin="round"
         clipPath="url(#clip0_243_559)"
@@ -19,7 +19,7 @@ function DashboardIcon({ color = "#707070" }: React.SVGProps<SVGElement>) {
       </g>
       <defs>
         <clipPath id="clip0_243_559">
-          <path fill="#fff" d="M0 0h16v16H0z"></path>
+          <path fill={color} d="M0 0h16v16H0z"></path>
         </clipPath>
       </defs>
     </svg>

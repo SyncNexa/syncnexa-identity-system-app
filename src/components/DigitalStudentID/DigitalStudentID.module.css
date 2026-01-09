@@ -60,4 +60,20 @@
 
 .value {
   color: var(--color-black);
+}
+
+.modal_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.modal_content .name {
+  font-size: 1.2rem;
+}
+.modal_content small {
+  color: #a1a1a1;
+}
+.modal_content small span {
+  color: #04d69d;
 }/*# sourceMappingURL=DigitalStudentID.module.css.map */

@@ -1,0 +1,42 @@
+.section_table {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.section_table .header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+.section_table .header p {
+  color: var(--color-title);
+}
+.section_table .header .tooltip {
+  justify-content: flex-start;
+}
+.section_table .wrapper {
+  width: 100%;
+  border-radius: 6px;
+  border: 0.1rem solid var(--color-border, #e3e5e5);
+}
+.section_table .wrapper .cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 0.1rem solid var(--color-border);
+}
+.section_table .wrapper .cell .left {
+  position: relative;
+}
+.section_table .wrapper .cell .left small {
+  display: block;
+  color: var(--color-text);
+}
+.section_table .wrapper .cell .left p {
+  color: var(--color-title);
+}/*# sourceMappingURL=SectionTable.module.css.map */

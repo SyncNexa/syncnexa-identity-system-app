@@ -1,0 +1,48 @@
+.security {
+  position: relative;
+  margin: 2rem 0;
+}
+.security .section {
+  margin: 0.7rem 0;
+}
+.security .section .title {
+  margin-bottom: 0.5rem;
+  color: var(--color-title);
+}
+.security .overview {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  border: 0.1rem solid var(--color-border);
+  border-radius: 0.5rem;
+}
+.security .overview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.security .overview .right {
+  padding: 1rem;
+}
+.security .overview .right .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+.security .overview .right .row:not(:last-child) {
+  border-bottom: 0.1rem solid var(--color-border);
+}
+.security .overview .right .row small {
+  display: block;
+  color: var(--color-text);
+}
+.security .overview .right .row p {
+  color: var(--color-title);
+}
+.security .overview .right .row ul {
+  padding: 0 1.5rem;
+}
+.security .overview .right .row ul li {
+  color: var(--color-title);
+}/*# sourceMappingURL=Security.module.css.map */

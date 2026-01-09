@@ -370,6 +370,19 @@ function SyncInput({
   }
 
   if (inputType !== "otp") {
+    if (inputType === "textarea") {
+      return (
+        <div className={Styles.inputWrapper}>
+          {label && (
+            <label htmlFor={generatedId.current}>
+              {label}
+              {required && <span>*</span>}
+            </label>
+          )}
+          <textarea className={Styles.textarea} placeholder={placeholder} />
+        </div>
+      );
+    }
     return (
       <div className={Styles.inputWrapper + (className ? ` ${className}` : "")}>
         {label && (

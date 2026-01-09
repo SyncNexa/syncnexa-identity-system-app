@@ -1,0 +1,84 @@
+.settings {
+  position: relative;
+  margin: 2rem 0;
+
+  .preferences {
+    padding: 1.5rem;
+
+    .section {
+      margin: 0.7rem 0;
+      padding: 0.7rem 0;
+      border-bottom: 0.1rem solid var(--color-border);
+
+      .title {
+        margin-bottom: 1rem;
+        color: var(--color-title);
+      }
+
+      .cat {
+        position: relative;
+        max-width: 70rem;
+
+        &_title {
+          color: var(--color-text);
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.5rem 0;
+
+          p {
+            color: var(--color-title);
+          }
+        }
+      }
+    }
+  }
+
+  .compliance {
+    // padding: 1.5rem;
+
+    .wrapper {
+      padding: 1.5rem;
+      border-bottom: 0.1rem solid var(--color-border);
+
+      h4 {
+        color: var(--color-title);
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        color: var(--color-title);
+        margin-bottom: 1rem;
+      }
+
+      small {
+        color: var(--color-text);
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .summary {
+      margin-top: 0.5rem;
+      padding: 1.5rem;
+
+      .data_row {
+        margin: 0.5rem 0;
+
+        small {
+          color: var(--color-text);
+          display: block;
+        }
+
+        p {
+          color: var(--color-title);
+        }
+      }
+    }
+  }
+}
