@@ -1,51 +1,33 @@
+"use client";
 import Stroke from "@/components/Stroke/Stroke";
 import SideBar from "@/layouts/navigation/sidebar/SideBar";
-import Image from "next/image";
 import React from "react";
 import "../globals.css";
-import SyncSearch from "@/components/Input/SyncSearch";
 import styles from "@/app/dashboard/overview/style/style.module.css";
-import HelpIcon from "@/assets/icons/Help";
+import MainPanel from "./page";
+import NavigationProvider from "@/contexts/NavigationContext";
 
 function RootDashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const windowSize = useWindow();
+  // alert("Window size is: " + windowSize.width);
   return (
-    <main className={styles.dashboard_layout}>
-      <section className={styles.top_area}>
-        <div className={styles.top_area_left}>
-          <Image
-            src={"/logo.svg"}
-            alt="SyncNexa logo"
-            width={100}
-            height={20}
-            quality={100}
-            priority
-          />
-          <h2>SyncNexa</h2>
-        </div>
-        <Stroke direction="vertical" color="var(--color-border)" size={1} />
-        <div className={styles.top_area_right}>
-          <SyncSearch />
-          <div className={styles.top_area_right_right}>
-            <button className={styles.green_button}>
-              <HelpIcon width={15} height={15} />
-              HELP
-            </button>
+    <NavigationProvider>
+      <main className={styles.dashboard_layout}>
+        <MainPanel />
+        <Stroke direction="horizontal" color="var(--color-border)" size={1} />
+        <section className={styles.bottom_area}>
+          <div className={styles.bottom_area_left}>
+            <SideBar />
           </div>
-        </div>
-      </section>
-      <Stroke direction="horizontal" color="var(--color-border)" size={1} />
-      <section className={styles.bottom_area}>
-        <div className={styles.bottom_area_left}>
-          <SideBar />
-        </div>
-        <Stroke direction="vertical" color="var(--color-border)" size={1} />
-        <div className={styles.bottom_area_right}>{children}</div>
-      </section>
-    </main>
+          <Stroke direction="vertical" color="var(--color-border)" size={1} />
+          <div className={styles.bottom_area_right}>{children}</div>
+        </section>
+      </main>
+    </NavigationProvider>
   );
 }
 

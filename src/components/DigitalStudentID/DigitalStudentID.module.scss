@@ -12,6 +12,10 @@
     gap: 1rem;
     align-items: flex-end;
     width: 100%;
+
+    @media screen and (max-width: 800px) {
+      align-items: center;
+    }
   }
 }
 
@@ -20,6 +24,10 @@
   gap: 32px;
   align-items: center;
   width: 100%;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+  }
 }
 
 .photoWrapper {

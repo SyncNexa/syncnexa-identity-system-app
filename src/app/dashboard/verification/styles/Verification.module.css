@@ -5,6 +5,16 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
+@media screen and (max-width: 900px) and (min-width: 600px) {
+  .verification {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media screen and (max-width: 500px) {
+  .verification {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
 .verification .card {
   border: 0.1rem solid var(--color-border);
   border-radius: 0.5rem;

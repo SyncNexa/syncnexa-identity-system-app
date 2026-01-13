@@ -13,12 +13,22 @@
   align-items: flex-end;
   width: 100%;
 }
+@media screen and (max-width: 800px) {
+  .container .content {
+    align-items: center;
+  }
+}
 
 .infoSection {
   display: flex;
   gap: 32px;
   align-items: center;
   width: 100%;
+}
+@media screen and (max-width: 800px) {
+  .infoSection {
+    flex-direction: column;
+  }
 }
 
 .photoWrapper {

@@ -1,4 +1,10 @@
 .nav {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+}
+.nav .wrapper {
   width: 100%;
   height: 100%;
   display: flex;
@@ -8,7 +14,7 @@
   flex-direction: column;
   flex-shrink: 0;
 }
-.nav .container {
+.nav .wrapper .container {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -16,10 +22,10 @@
   width: 100%;
   padding: 0.5rem;
 }
-.nav .container:last-child {
+.nav .wrapper .container:last-child {
   border-top: 0.1rem solid var(--color-border);
 }
-.nav .container a {
+.nav .wrapper .container a {
   display: flex;
   width: 100%;
   gap: 1rem;
@@ -30,17 +36,17 @@
   border-radius: 0.5rem;
   flex-shrink: 0;
 }
-.nav .container a:hover {
+.nav .wrapper .container a:hover {
   background: var(--color-hover);
 }
-.nav .container .active {
+.nav .wrapper .container .active {
   color: var(--color-white);
   border-radius: 10px;
   border-left: 1px solid var(--color-primary, #04d69d);
   background: var(--color-primary, #04d69d);
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1) inset;
 }
-.nav .container .user_profile {
+.nav .wrapper .container .user_profile {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -48,7 +54,7 @@
   width: 100%;
   padding: 1rem 0;
 }
-.nav .container .user_profile img {
+.nav .wrapper .container .user_profile img {
   width: 3rem;
   height: 3rem;
   border: 0.15rem solid var(--color-primary);
@@ -56,14 +62,38 @@
   -o-object-fit: cover;
      object-fit: cover;
 }
-.nav .container .user_profile div {
+.nav .wrapper .container .user_profile div {
   position: relative;
 }
-.nav .container .user_profile div b {
+.nav .wrapper .container .user_profile div b {
   display: block;
   color: var(--color-title);
 }
-.nav .container .user_profile div small {
+.nav .wrapper .container .user_profile div small {
   display: block;
   color: var(--color-primary);
+}
+
+@media screen and (max-width: 800px) {
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.396);
+    --webkit-backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+    padding: 0;
+    z-index: 100;
+    display: none;
+  }
+  .nav .wrapper {
+    max-width: 20rem;
+    padding: 2rem 0rem;
+    background: var(--panel-bg);
+    margin-left: auto;
+  }
+  .nav.active {
+    display: block;
+  }
 }/*# sourceMappingURL=style.module.css.map */

@@ -5,7 +5,7 @@
   gap: 0;
   border: 0.064rem solid var(--color-border, #e3e5e5);
   border-radius: 6px;
-  //   overflow: hidden;
+  overflow: auto;
 
   .header_row {
     display: flex;
@@ -15,6 +15,7 @@
     background-color: var(--color-input, #f7f7f7);
     border-bottom: 0.064rem solid var(--color-border, #e3e5e5);
     padding: 0;
+    flex-shrink: 0;
 
     .header_cell {
       display: flex;
@@ -22,6 +23,7 @@
       padding: 0.64rem 0.81rem;
       flex: 1;
       min-width: 0;
+      flex-shrink: 0;
 
       .header_text {
         font-family: "Poppins", sans-serif;
@@ -42,6 +44,7 @@
     align-items: center;
     border-bottom: 0.064rem solid var(--color-border, #e3e5e5);
     padding: 0;
+    flex-shrink: 0;
 
     &:last-child {
       border-bottom: none;
@@ -53,16 +56,16 @@
       padding: 0.64rem 0.81rem;
       flex: 1;
       min-width: 0;
+      flex-shrink: 0;
 
       .cell_content {
-        font-family: "Poppins", sans-serif;
         font-size: 0.899rem;
         font-weight: 400;
         line-height: normal;
         color: var(--color-title, #171717);
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
         margin: 0;
 
         &.app_name {
@@ -91,8 +94,8 @@
 
           .app_title {
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
             min-width: 0;
           }
         }
