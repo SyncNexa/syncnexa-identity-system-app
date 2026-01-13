@@ -12,6 +12,7 @@ import PersonalDetails from "./components/PersonalDetails";
 import AcademicInfo from "./components/AcademicInfo";
 
 function Identity() {
+  const [active, setActive] = useState(0);
   const [modal, setModal] = useState<{
     open: boolean;
     content: React.ReactNode | null;
@@ -27,7 +28,98 @@ function Identity() {
       pageTitle="Identity Management"
       sub="Manage all personal and academic data"
     >
-      <div>
+      <div className={styles.identity}>
+        <div className={styles.trigger}>
+          {["Personal Information", "Academic Information"].map((c, i) => (
+            <button
+              key={i}
+              className={active === i ? styles.active : ""}
+              onClick={() => setActive(i)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <div className={styles.small_screen}>
+          {active === 1 ? (
+            <SectionTable
+              cells={[
+                {
+                  header: "Institution",
+                  label: "Federal University of Technology Owerri",
+                },
+                { header: "Department/Level", label: "Computer Science/500" },
+                { header: "Program", label: "Undergraduate program" },
+                { header: "Registration Number", label: "456789678" },
+                { header: "Entry Year/Graduation year", label: "2021/2026" },
+              ]}
+              title=""
+              // info="Last updated: Feb 12, 2025"
+              footer={
+                <div className={styles.footer}>
+                  <div className={styles.top}>
+                    <small>Status:</small>
+                    <p>Verified</p>
+                  </div>
+                  <div className={styles.bottom}>
+                    <SyncButton
+                      variant="light"
+                      color="light"
+                      onClick={() =>
+                        setModal((prev) => ({
+                          ...prev,
+                          open: !prev.open,
+                          content: <AcademicInfo />,
+                          title: "Academic Information Request",
+                        }))
+                      }
+                    >
+                      <EditPen />
+                      <span>Request Correction</span>
+                    </SyncButton>
+                  </div>
+                </div>
+              }
+            />
+          ) : (
+            <SectionTable
+              cells={[
+                { header: "Full Name", label: "John Doe" },
+                { header: "Date of Birth", label: "January 1, 1990" },
+                { header: "Email", label: "john.doe@example.com" },
+                { header: "Phone Number", label: "+1 234 567 8901" },
+                { header: "Address", label: "123 Main St, Anytown, USA" },
+              ]}
+              title=""
+              // info="Last updated: Feb 12, 2025"
+              footer={
+                <div className={styles.footer}>
+                  <div className={styles.top}>
+                    <small>National ID:</small>
+                    <p>Linked</p>
+                  </div>
+                  <div className={styles.bottom}>
+                    <SyncButton
+                      variant="light"
+                      color="light"
+                      onClick={() =>
+                        setModal((prev) => ({
+                          ...prev,
+                          open: !prev.open,
+                          content: <PersonalDetails />,
+                          title: "Edit Personal Information",
+                        }))
+                      }
+                    >
+                      <EditPen />
+                      <span>Edit</span>
+                    </SyncButton>
+                  </div>
+                </div>
+              }
+            />
+          )}
+        </div>
         <div className={styles.grid}>
           <SectionTable
             cells={[

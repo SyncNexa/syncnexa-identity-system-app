@@ -10,6 +10,7 @@
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(3.5px);
   z-index: 100;
+  padding: 1rem;
 
   &.visible {
     display: flex;
@@ -20,6 +21,10 @@
     background: #ffffff;
     border-radius: 1rem;
     min-width: 40rem;
+
+    @media screen and (max-width: 800px) {
+      min-width: 30rem;
+    }
 
     .header {
       width: 100%;

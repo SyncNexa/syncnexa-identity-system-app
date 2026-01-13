@@ -14,6 +14,11 @@
   align-items: center;
   padding: 1.5rem;
 }
+@media screen and (max-width: 800px) {
+  .dashboard_layout .top_area_left {
+    padding: 1rem;
+  }
+}
 .dashboard_layout .top_area_left img {
   width: 2.5rem;
   height: 2.5rem;
@@ -23,12 +28,45 @@
 .dashboard_layout .top_area_left h2 {
   color: var(--color-title);
 }
+.dashboard_layout .top_area .small_view {
+  display: none;
+}
+@media screen and (max-width: 800px) {
+  .dashboard_layout .top_area .small_view {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .dashboard_layout .top_area .small_view .menu_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .dashboard_layout .top_area .small_view .menu_btn span {
+    display: block;
+    height: 0.2rem;
+    width: 1rem;
+    background: var(--color-title);
+    border-radius: 0.5rem;
+  }
+  .dashboard_layout .top_area .small_view .menu_btn span:nth-child(2) {
+    width: 1.7rem;
+  }
+}
 .dashboard_layout .top_area_right {
   flex: 1 1 85%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
+}
+@media screen and (max-width: 800px) {
+  .dashboard_layout .top_area_right {
+    display: none;
+  }
 }
 .dashboard_layout .top_area_right_right {
   display: flex;
@@ -65,6 +103,14 @@
   padding: 1rem;
   overflow: auto;
 }
+@media screen and (max-width: 800px) {
+  .dashboard_layout .bottom_area_left {
+    flex: 0;
+  }
+  .dashboard_layout .bottom_area_right {
+    flex: 1;
+  }
+}
 
 .overview {
   display: grid;
@@ -72,6 +118,41 @@
   gap: 31px;
   margin: 2rem 0;
   align-items: start;
+}
+.overview .small_screen {
+  display: none;
+}
+.overview .trigger {
+  display: none;
+}
+@media screen and (max-width: 800px) {
+  .overview {
+    display: block;
+    margin: 3rem 0;
+  }
+  .overview .small_screen {
+    display: block;
+    width: 100%;
+  }
+  .overview .big_screen {
+    display: none;
+  }
+  .overview .trigger {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .overview .trigger button {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    border-radius: 0.5rem;
+    background: var(--color-light);
+    color: var(--color-text);
+  }
+  .overview .trigger button.active {
+    color: var(--color-title);
+    background: var(--color-tab-bg-active);
+  }
 }
 
 .mainContent {

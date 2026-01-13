@@ -1,11 +1,13 @@
-.grid {
+.identity {
+  position: relative;
+}
+.identity .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin: 1rem 0;
 }
-
-.modal_wrapper {
+.identity .modal_wrapper {
   margin: 0.5rem 0;
   display: flex;
   flex-direction: column;
@@ -14,26 +16,59 @@
   justify-content: center;
   max-width: 40rem;
 }
-.modal_wrapper .inner {
+.identity .modal_wrapper .inner {
   width: 100%;
 }
-.modal_wrapper .big {
+.identity .modal_wrapper .big {
   width: 100%;
 }
-
-.footer {
+.identity .footer {
   width: 100%;
   padding: 1rem;
 }
-.footer .top {
+.identity .footer .top {
   position: relative;
 }
-.footer .top small {
+.identity .footer .top small {
   color: var(--color-text);
   display: block;
 }
-.footer .bottom {
+.identity .footer .bottom {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+.identity .trigger {
+  display: none;
+}
+@media screen and (max-width: 800px) {
+  .identity {
+    display: block;
+    margin: 3rem 0;
+  }
+  .identity .small_screen {
+    display: block;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+  .identity .grid {
+    display: none;
+  }
+  .identity .trigger {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .identity .trigger button {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    border-radius: 0.5rem;
+    background: var(--color-light);
+    color: var(--color-text);
+  }
+  .identity .trigger button.active {
+    color: var(--color-title);
+    background: var(--color-tab-bg-active);
+  }
 }/*# sourceMappingURL=Identity.module.css.map */
