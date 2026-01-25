@@ -14,6 +14,11 @@ interface SyncInput extends React.InputHTMLAttributes<HTMLInputElement> {
     message: string;
     type: "info" | "warning" | "error";
   };
+  otpStyles?: {
+    inputStyles?: React.CSSProperties;
+    containerStyles?: React.CSSProperties;
+    wrapperStyles?: React.CSSProperties;
+  };
 }
 
 interface DocumentSelector {

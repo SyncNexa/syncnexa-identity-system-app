@@ -59,24 +59,6 @@
     }
   }
 
-  &.outline {
-    border-radius: 0.3rem;
-    color: var(--color-primary);
-    background: transparent;
-    border: 0.1rem solid var(--color-primary);
-    padding: 0.5rem 1rem;
-
-    &:hover {
-      filter: brightness(0.9);
-    }
-
-    .loader {
-      border-bottom-color: var(--color-primary);
-      border-left-color: var(--color-primary);
-      border-top-color: var(--color-primary);
-    }
-  }
-
   &.text {
     color: var(--color-primary);
     background: transparent;
@@ -146,6 +128,29 @@
   }
 }
 
+.outline {
+  border-radius: 0.3rem;
+  color: var(--color-primary) !important;
+  background: transparent !important;
+  border: 0.1rem solid var(--color-primary) !important;
+  padding: 0.5rem 1rem;
+
+  &.disabled {
+    color: var(--color-disabled) !important;
+    background: transparent !important;
+    border-color: var(--color-disabled) !important;
+  }
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+
+  .loader {
+    border-bottom-color: var(--color-primary);
+    border-left-color: var(--color-primary);
+    border-top-color: var(--color-primary);
+  }
+}
 /* Accessibility helpers */
 .button:focus-visible {
   outline: 3px solid rgba(4, 214, 157, 0.18);
