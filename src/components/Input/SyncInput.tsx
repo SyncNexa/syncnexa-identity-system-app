@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import Styles from "./style/Style.module.css";
 import EyeIcon from "../../assets/icons/Eye";
@@ -25,14 +26,15 @@ function SyncInput({
   id,
   className,
   name,
+  otpStyles,
   ...rest
 }: SyncInput) {
   const inputRef = useRef<HTMLInputElement>(null);
   const generatedId = useRef(
-    id || `syncinput-${Math.random().toString(36).slice(2, 9)}`
+    id || `syncinput-${Math.random().toString(36).slice(2, 9)}`,
   );
   const [otpValues, setOtpValues] = useState<string[]>(
-    Array(otpLength).fill("")
+    Array(otpLength).fill(""),
   );
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [timer, setTimer] = useState(resendDelay);
@@ -74,7 +76,7 @@ function SyncInput({
 
   const handleOtpKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       otpRefs.current[index - 1]?.focus();
@@ -110,7 +112,7 @@ function SyncInput({
     const fetchCountries = async () => {
       try {
         const res = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,cca2,idd,flags"
+          "https://restcountries.com/v3.1/all?fields=name,cca2,idd,flags",
         );
         const data = await res.json();
         const mapped: Country[] = (data || [])
@@ -431,11 +433,12 @@ function SyncInput({
   }
 
   return (
-    <div className={Styles.otpInputWrapper}>
+    <div className={Styles.otpInputWrapper} style={otpStyles?.containerStyles}>
       {label && <label>{label}</label>}
-      <div className={Styles.otpInput}>
+      <div className={Styles.otpInput} style={otpStyles?.wrapperStyles}>
         {Array.from({ length: otpLength }).map((_, i) => (
           <input
+            style={otpStyles?.inputStyles}
             key={i}
             ref={(el) => {
               otpRefs.current[i] = el;

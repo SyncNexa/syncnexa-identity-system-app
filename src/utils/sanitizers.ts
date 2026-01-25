@@ -1,6 +1,6 @@
-export function areKeysEmpty(
+export function areFieldsFilled(
   payload: Record<string, any>,
-  exempt: string[] = []
+  exempt: string[] = [],
 ): boolean {
   return Object.entries(payload).every(([key, value]) =>
     exempt.includes(key)
@@ -9,6 +9,6 @@ export function areKeysEmpty(
           value === null ||
           value === undefined ||
           (typeof value == "string" && value.trim() === "")
-        )
+        ),
   );
 }

@@ -15,7 +15,22 @@ export default function VerifyPage() {
         Enter the OTP sent to m****@*** to continue
       </p>
 
-      <SyncInput className={styles.otpInput} inputType={"otp"} />
+      <SyncInput
+        className={styles.otpInput}
+        inputType={"otp"}
+        otpStyles={{
+          containerStyles: {
+            width: "var(--otp-container-width)",
+          },
+          wrapperStyles: {
+            width: "var(--otp-wrapper-width)",
+          },
+          inputStyles: {
+            flex: "var(--otp-input-flex)",
+            height: "var(--otp-input-height)",
+          },
+        }}
+      />
 
       <div className={styles.actions}>
         <Link
@@ -28,6 +43,7 @@ export default function VerifyPage() {
           onClick={() => router.push("/")}
           variant="primary"
           buttonStyles={{ height: 40, width: 200 }}
+          className={styles.btn}
         >
           Create account
         </SyncButton>

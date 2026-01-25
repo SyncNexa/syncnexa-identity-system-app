@@ -7,6 +7,14 @@
   align-items: center;
   gap: 24px;
   margin-top: 24px;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+
+    .btn {
+      flex: 1;
+    }
+  }
 }
 
 .verifyContainer {
@@ -29,14 +37,18 @@
     color: var(--color-text);
   }
 
-  .otpInput {
-    width: 100%;
-    margin-bottom: 1.5rem;
-  }
-
   .actions {
     display: flex;
     justify-content: flex-start;
     gap: 2rem;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  :root {
+    --otp-container-width: 100%;
+    --otp-wrapper-width: 100% !important;
+    --otp-input-flex: 1;
+    --otp-input-height: 3.5rem;
   }
 }

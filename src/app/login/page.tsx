@@ -4,7 +4,7 @@ import styles from "./style.module.css";
 import { useRouter } from "next/navigation";
 import SyncInput from "@/components/Input/SyncInput";
 import SyncButton from "@/components/Button/SyncButton";
-import { areKeysEmpty } from "@/utils/sanitizers";
+import { areFieldsFilled } from "@/utils/sanitizers";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -53,7 +53,7 @@ export default function LoginPage() {
       <SyncButton
         className={styles.submit}
         onClick={() => router.push("/api/login")}
-        disabled={areKeysEmpty(form)}
+        disabled={!areFieldsFilled(form)}
       >
         Login
       </SyncButton>
