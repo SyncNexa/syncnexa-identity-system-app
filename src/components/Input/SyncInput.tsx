@@ -363,7 +363,10 @@ function SyncInput({
           {rightNode}
         </div>
         {info && (
-          <div role={info.type === "error" ? "alert" : "status"}>
+          <div
+            className={`${Styles.validationMessage} ${Styles[info.type]}`}
+            role={info.type === "error" ? "alert" : "status"}
+          >
             {info.message}
           </div>
         )}
@@ -424,7 +427,10 @@ function SyncInput({
           )}
         </div>
         {info && (
-          <div role={info.type === "error" ? "alert" : "status"}>
+          <div
+            className={`${Styles.validationMessage} ${Styles[info.type]}`}
+            role={info.type === "error" ? "alert" : "status"}
+          >
             {info.message}
           </div>
         )}

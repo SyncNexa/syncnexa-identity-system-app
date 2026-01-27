@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { APP_ROUTES } from "./routes/paths";
 
 /**
  * Proxy-style middleware replacement file.
@@ -30,6 +31,7 @@ export function proxy(req: NextRequest) {
     "/",
     "/about",
     "/signup/verify",
+    "/session-expired",
     "/dashboard",
     "/dashboard/overview",
     "/dashboard/identity",
@@ -45,7 +47,7 @@ export function proxy(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   if (!token) {
     const url = req.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = APP_ROUTES.SESSION_EXPIRED;
     return NextResponse.redirect(url);
   }
 

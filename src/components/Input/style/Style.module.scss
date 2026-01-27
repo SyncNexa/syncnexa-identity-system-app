@@ -12,6 +12,38 @@
     }
   }
 
+  .validationMessage {
+    display: block;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    padding: 0.3rem 0;
+    line-height: 1.4;
+    animation: slideDown 0.2s ease-out;
+
+    &.error {
+      color: var(--color-error);
+    }
+
+    &.warning {
+      color: var(--color-warning);
+    }
+
+    &.info {
+      color: var(--color-primary);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .textarea {
     display: block;
     font-size: 1rem;

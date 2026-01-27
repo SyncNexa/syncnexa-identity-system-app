@@ -10,6 +10,33 @@
 .inputWrapper label span {
   color: var(--color-red);
 }
+.inputWrapper .validationMessage {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+  padding: 0.3rem 0;
+  line-height: 1.4;
+  animation: slideDown 0.2s ease-out;
+}
+.inputWrapper .validationMessage.error {
+  color: var(--color-error);
+}
+.inputWrapper .validationMessage.warning {
+  color: var(--color-warning);
+}
+.inputWrapper .validationMessage.info {
+  color: var(--color-primary);
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .inputWrapper .textarea {
   display: block;
   font-size: 1rem;

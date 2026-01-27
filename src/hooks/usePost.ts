@@ -11,30 +11,17 @@ const resolveEndpoint: ResolveEndpointFn = (endpoint) => {
   return `/api/${endpoint}`;
 };
 
-type PostOptions<TRes> = {
-  headers?: Record<string, string>;
-  optimisticData?: TRes | null; // set optimistic data immediately
-  retry?: number; // number of retries on failure
-  retryDelay?: number; // ms between retries
-  rawResponse?: boolean; // if true, return Response instead of parsed json
-};
-
-type UsePostReturn<TRes, TReq> = {
-  loading: boolean;
-  data: TRes | null;
-  error: Error | null;
-  post: (body?: TReq, opts?: PostOptions<TRes>) => Promise<TRes | null>;
-  reset: () => void;
-  abort: () => void;
-  setData: (d: TRes | null) => void;
-};
+const ABORT_TIMEOUT_MS = 30_000;
+const ABORT_RETRY_LIMIT = 3;
 
 export default function usePost<TRes = any, TReq = any>(
-  endpoint: string
+  endpoint: string,
 ): UsePostReturn<TRes, TReq> {
   const [data, setData] = useState<TRes | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const endpointRef = useRef<string>(endpoint);
 
@@ -46,6 +33,8 @@ export default function usePost<TRes = any, TReq = any>(
     abort();
     setData(null);
     setError(null);
+    setStatus(null);
+    setMessage(null);
     setLoading(false);
   }, [abort]);
 
@@ -53,8 +42,6 @@ export default function usePost<TRes = any, TReq = any>(
     async (body?: TReq, opts?: PostOptions<TRes>) => {
       endpointRef.current = endpoint;
       const url = resolveEndpoint(endpointRef.current);
-      const controller = new AbortController();
-      abortRef.current = controller;
 
       const {
         headers = {},
@@ -72,8 +59,22 @@ export default function usePost<TRes = any, TReq = any>(
 
       setLoading(true);
       setError(null);
+      setMessage(null);
 
-      const perform = async (): Promise<TRes | null> => {
+      let errorRetries = 0;
+      let abortRetries = 0;
+      let lastError: any = null;
+      let handledError = false;
+
+      while (true) {
+        const controller = new AbortController();
+        abortRef.current = controller;
+        let timedOut = false;
+        const timeoutId = setTimeout(() => {
+          timedOut = true;
+          controller.abort();
+        }, ABORT_TIMEOUT_MS);
+
         try {
           let bodyToSend: any = undefined;
           const requestHeaders: Record<string, string> = { ...headers };
@@ -93,6 +94,7 @@ export default function usePost<TRes = any, TReq = any>(
             body: bodyToSend,
             signal: controller.signal,
           });
+          clearTimeout(timeoutId);
 
           if (!res.ok) {
             const text = await res.text().catch(() => "");
@@ -114,40 +116,68 @@ export default function usePost<TRes = any, TReq = any>(
             parsed = await res.text();
           }
 
-          setData(parsed as TRes);
-          setError(null);
-          return parsed as TRes;
-        } catch (err) {
-          if ((err as any)?.name === "AbortError") {
-            // aborted
-            throw err;
+          // Handle APIResponse structure
+          if (
+            parsed &&
+            typeof parsed === "object" &&
+            "status" in parsed &&
+            "data" in parsed
+          ) {
+            setStatus(parsed.status);
+            setMessage(parsed.message || null);
+            setData(parsed.data as TRes);
+            setError(null);
+            setLoading(false);
+            return parsed.data as TRes;
+          } else {
+            // Fallback for non-APIResponse format
+            setData(parsed as TRes);
+            setError(null);
+            setLoading(false);
+            return parsed as TRes;
           }
-          // rethrow to allow retry logic
-          throw err;
-        }
-      };
-
-      // retry loop
-      let attempts = 0;
-      let lastError: any = null;
-      while (attempts <= retry) {
-        try {
-          const result = await perform();
-          setLoading(false);
-          return result;
         } catch (err) {
+          clearTimeout(timeoutId);
+
+          if ((err as any)?.name === "AbortError") {
+            if (timedOut) {
+              const reason = "Request timed out after 30s.";
+              setMessage(reason);
+              setError(new Error(reason));
+              handledError = true;
+              break;
+            }
+
+            abortRetries += 1;
+            if (abortRetries <= ABORT_RETRY_LIMIT) {
+              continue; // retry cancelled request
+            }
+
+            const reason =
+              "Request was cancelled before completion. Retried 3 times without success.";
+            setMessage(reason);
+            setError(new Error(reason));
+            handledError = true;
+            break;
+          }
+
           lastError = err;
-          attempts += 1;
-          if (attempts > retry) break;
-          // wait
-          await new Promise((r) => setTimeout(r, retryDelay));
+          errorRetries += 1;
+          if (errorRetries <= retry) {
+            await new Promise((r) => setTimeout(r, retryDelay));
+            continue;
+          }
+          break;
         }
       }
 
       // failed after retries
-      setError(
-        lastError instanceof Error ? lastError : new Error(String(lastError))
-      );
+      if (!handledError) {
+        setError(
+          lastError instanceof Error ? lastError : new Error(String(lastError)),
+        );
+      }
+
       // rollback optimistic update
       if (typeof optimisticData !== "undefined" && optimisticData !== null) {
         setData(previous ?? null);
@@ -155,8 +185,8 @@ export default function usePost<TRes = any, TReq = any>(
       setLoading(false);
       return null;
     },
-    [data, endpoint]
+    [data, endpoint],
   );
 
-  return { loading, data, error, post, reset, abort, setData };
+  return { loading, data, error, status, message, post, reset, abort, setData };
 }

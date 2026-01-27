@@ -6,6 +6,7 @@ import SyncInput from "@/components/Input/SyncInput";
 import SyncButton from "@/components/Button/SyncButton";
 import { areFieldsFilled } from "@/utils/sanitizers";
 import Link from "next/link";
+import { APP_ROUTES, API_ROUTES } from "@/routes/paths";
 
 export default function LoginPage() {
   const [form, setForm] = useState({
@@ -48,11 +49,11 @@ export default function LoginPage() {
           />
         </div>
       </div>
-      <Link href={"/login/recover-password"}>Forgot password?</Link>
+      <Link href={APP_ROUTES.RECOVER_PASSWORD}>Forgot password?</Link>
 
       <SyncButton
         className={styles.submit}
-        onClick={() => router.push("/api/login")}
+        onClick={() => router.push(API_ROUTES.LOGIN)}
         disabled={!areFieldsFilled(form)}
       >
         Login
