@@ -5,6 +5,7 @@ import styles from "./style.module.css";
 import { useRouter } from "next/navigation";
 import SyncInput from "@/components/Input/SyncInput";
 import SyncButton from "@/components/Button/SyncButton";
+import { APP_ROUTES } from "@/routes/paths";
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -34,13 +35,13 @@ export default function VerifyPage() {
 
       <div className={styles.actions}>
         <Link
-          href="/signup"
+          href={APP_ROUTES.SIGNUP}
           style={{ color: "var(--color-primary)", textDecoration: "none" }}
         >
           ← Previous
         </Link>
         <SyncButton
-          onClick={() => router.push("/")}
+          onClick={() => router.push(APP_ROUTES.INDEX)}
           variant="primary"
           buttonStyles={{ height: 40, width: 200 }}
           className={styles.btn}

@@ -1,20 +1,32 @@
-interface Signup {
+interface SignupData {
   firstName: string;
   lastName: string;
   email: string;
-  phone?: string; // may be national or E.164 depending on source
   password: string;
-  confirmPassword?: string;
-  state?: string;
-  address?: string;
+  role: string;
+  country: string;
+  state: string;
+  address: string;
+  gender: string;
+  phone: string;
+  academic_info: AcademicInfo;
 }
 
-interface SignupPayload {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone?: string; // normalized (digits, may include leading +)
-  state?: string;
-  address?: string;
+interface AcademicInfo {
+  institution: string;
+  matric_number: string;
+  program: string;
+  department: string;
+  faculty: string;
+  admission_year: number;
+  student_level: string;
+  graduation_year?: number;
 }
+
+interface ValidationResult {
+  isValid: boolean;
+  message?: string;
+  type?: "info" | "warning" | "error";
+}
+
+type SignupResponse = APIResponse<SignupData>;
