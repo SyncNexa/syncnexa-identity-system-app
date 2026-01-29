@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import styles from "./style.module.css";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SyncInput from "@/components/Input/SyncInput";
 import SyncButton from "@/components/Button/SyncButton";
 import { areFieldsFilled } from "@/utils/sanitizers";
@@ -11,10 +11,14 @@ import usePost from "@/hooks/usePost";
 import { useToast } from "@/hooks/useToast";
 import { validateEmail, validatePassword } from "@/utils/validators";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { showToast } = useToast();
   const { post, loading } = usePost<LoginResponseData>(API_ROUTES.LOGIN);
+
+  // Get redirect parameter from URL
+  const redirectTo = searchParams.get("redirect");
 
   const [form, setForm] = useState({
     email: "",
@@ -83,7 +87,10 @@ export default function LoginPage() {
         type: "success",
         title: "Welcome",
       });
-      router.push(APP_ROUTES.OVERVIEW);
+
+      // Redirect to intended page or default to overview
+      const destination = redirectTo || APP_ROUTES.OVERVIEW;
+      router.push(destination);
     }
   };
 
@@ -150,5 +157,13 @@ export default function LoginPage() {
         Login
       </SyncButton>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className={styles.form}>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
