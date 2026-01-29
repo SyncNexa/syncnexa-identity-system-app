@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
+import { useToast } from "@/hooks/useToast";
 
 type ResolveEndpointFn = (endpoint: string) => string;
 
@@ -24,6 +25,7 @@ export default function usePost<TRes = any, TReq = any>(
   const [message, setMessage] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const endpointRef = useRef<string>(endpoint);
+  const { showToast } = useToast();
 
   const abort = useCallback(() => {
     abortRef.current?.abort();
@@ -98,7 +100,18 @@ export default function usePost<TRes = any, TReq = any>(
 
           if (!res.ok) {
             const text = await res.text().catch(() => "");
-            throw new Error(`POST ${url} failed (${res.status}): ${text}`);
+            let errorMessage = `Request failed with status ${res.status}`;
+
+            try {
+              const errorJson = JSON.parse(text);
+              if (errorJson.message) {
+                errorMessage = errorJson.message;
+              }
+            } catch {
+              if (text) errorMessage = text;
+            }
+
+            throw new Error(errorMessage);
           }
 
           if (rawResponse) {
@@ -128,6 +141,16 @@ export default function usePost<TRes = any, TReq = any>(
             setData(parsed.data as TRes);
             setError(null);
             setLoading(false);
+
+            // Show success toast
+            if (parsed.message) {
+              showToast({
+                message: parsed.message,
+                type: "success",
+                title: "Success",
+              });
+            }
+
             return parsed.data as TRes;
           } else {
             // Fallback for non-APIResponse format
@@ -144,6 +167,11 @@ export default function usePost<TRes = any, TReq = any>(
               const reason = "Request timed out after 30s.";
               setMessage(reason);
               setError(new Error(reason));
+              showToast({
+                message: reason,
+                type: "error",
+                title: "Request Timeout",
+              });
               handledError = true;
               break;
             }
@@ -157,6 +185,11 @@ export default function usePost<TRes = any, TReq = any>(
               "Request was cancelled before completion. Retried 3 times without success.";
             setMessage(reason);
             setError(new Error(reason));
+            showToast({
+              message: reason,
+              type: "error",
+              title: "Request Cancelled",
+            });
             handledError = true;
             break;
           }
@@ -173,9 +206,14 @@ export default function usePost<TRes = any, TReq = any>(
 
       // failed after retries
       if (!handledError) {
-        setError(
-          lastError instanceof Error ? lastError : new Error(String(lastError)),
-        );
+        const err =
+          lastError instanceof Error ? lastError : new Error(String(lastError));
+        setError(err);
+        showToast({
+          message: err.message,
+          type: "error",
+          title: "Request Failed",
+        });
       }
 
       // rollback optimistic update

@@ -48,6 +48,11 @@ interface OTPVerifyData {
   token?: string;
 }
 
+interface OTPVerification {
+  verified: boolean;
+  message: string;
+}
+
 type PostOptions<TRes> = {
   headers?: Record<string, string>;
   optimisticData?: TRes | null; // set optimistic data immediately

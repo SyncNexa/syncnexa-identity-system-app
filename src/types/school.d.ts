@@ -26,3 +26,9 @@ interface Faculty {
   name: string;
   departments: string[];
 }
+
+interface ProgramList {
+  institutionCode: string;
+  count: number;
+  programs: string[];
+}

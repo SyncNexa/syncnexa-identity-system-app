@@ -60,6 +60,11 @@
   left: 0;
   width: 100%;
 }
+@media screen and (max-width: 768px) {
+  .layout .right_panel .copyright {
+    bottom: 0.5rem;
+  }
+}
 .layout .container {
   display: flex;
   gap: 24px;

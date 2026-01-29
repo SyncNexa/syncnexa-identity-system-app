@@ -22,16 +22,25 @@ export const API_ROUTES = {
   SIGNUP: "/api/signup",
   OTP_REQUEST: "/api/otp/request",
   OTP_VERIFY: "/api/otp/verify",
+  VERIFY_EMAIL_REQUEST: "/api/verify-email/request",
+  VERIFY_EMAIL: "/api/verify-email",
+  VERIFY_EMAIL_RESEND: "/api/verify-email/resend",
   UNIVERSITIES: "/api/universities",
-  INSTITUTION_FACULTIES: (code: string) => `/institutions/${code}/faculties`,
+  INSTITUTION_FACULTIES: (code: string) =>
+    `/api/institutions/${code}/faculties`,
+  INSTITUTION_PROGRAMS: (code: string) => `/api/institutions/${code}/programs`,
 } as const;
 
 // Backend API endpoints - actual backend server paths (proxied)
 export const BACKEND_API_ENDPOINTS = {
-  LOGIN: "/login",
-  SIGNUP: "/signup",
-  OTP_REQUEST: "/api/auth/request-otp",
-  OTP_VERIFY: "/api/auth/verify-otp",
+  LOGIN: "/auth/login",
+  SIGNUP: "/auth/register",
+  OTP_REQUEST: "/auth/request-otp",
+  OTP_VERIFY: "/auth/verify-otp",
+  VERIFY_EMAIL_REQUEST: "/auth/verify-email/request",
+  VERIFY_EMAIL: "/auth/verify-email",
+  VERIFY_EMAIL_RESEND: "/auth/verify-email/resend",
   UNIVERSITIES: "/universities",
   INSTITUTION_FACULTIES: (code: string) => `/institutions/${code}/faculties`,
+  INSTITUTION_PROGRAMS: (code: string) => `/institutions/${code}/programs`,
 } as const;

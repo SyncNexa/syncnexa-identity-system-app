@@ -56,6 +56,11 @@ function SyncInput({
     onChange?.(e);
   };
 
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onValueChange?.(e.target.value);
+    onChange?.(e as any);
+  };
+
   const handleOtpChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return; // only digits
     const newValues = [...otpValues];
@@ -384,7 +389,15 @@ function SyncInput({
               {required && <span>*</span>}
             </label>
           )}
-          <textarea className={Styles.textarea} placeholder={placeholder} />
+          <textarea
+            id={generatedId.current}
+            className={Styles.textarea}
+            placeholder={placeholder}
+            onChange={handleTextAreaChange}
+            value={propValue ?? ""}
+            name={name}
+            aria-invalid={invalid ? true : undefined}
+          />
         </div>
       );
     }
@@ -414,6 +427,7 @@ function SyncInput({
             }
             aria-invalid={invalid ? true : undefined}
             name={name}
+            value={propValue ?? ""}
             {...rest}
           />
           {inputType === "password" ? (
@@ -455,6 +469,8 @@ function SyncInput({
             maxLength={1}
             inputMode="numeric"
             aria-label={`OTP digit ${i + 1}`}
+            name={name ? `${name}-${i}` : undefined}
+            aria-invalid={invalid ? true : undefined}
           />
         ))}
       </div>
@@ -465,6 +481,7 @@ function SyncInput({
             type="button"
             onClick={handleResend}
             aria-disabled={!resendEnabled}
+            style={{ color: "var(--color-primary)", cursor: "pointer" }}
           >
             Resend OTP
           </button>

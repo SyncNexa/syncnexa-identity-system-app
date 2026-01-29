@@ -29,4 +29,16 @@ interface ValidationResult {
   type?: "info" | "warning" | "error";
 }
 
+interface LoginData {
+  password: string;
+  email: string;
+}
+
+interface LoginResponseData {
+  accessToken: string;
+  refreshToken: string;
+  role: string; // Can only be 'student' | 'developer' | 'admin' | 'staff'
+}
+
+type LoginResponse = APIResponse<LoginData>;
 type SignupResponse = APIResponse<SignupData>;
