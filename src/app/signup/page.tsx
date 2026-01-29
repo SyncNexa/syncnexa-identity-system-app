@@ -9,6 +9,7 @@ import { SyncSelect } from "@/components/Input";
 import usePost from "@/hooks/usePost";
 import useFetch from "@/hooks/useFetch";
 import { APP_ROUTES, API_ROUTES } from "@/routes/paths";
+import { useToast } from "@/hooks/useToast";
 import {
   validateFirstName,
   validateLastName,
@@ -23,6 +24,7 @@ import {
 
 export default function SignupPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const { post, loading, error, status, message } = usePost<SignupData>(
     API_ROUTES.SIGNUP,
   );
@@ -79,6 +81,16 @@ export default function SignupPage() {
   } = useFetch<FacultyList>(
     form.academicInfo.institution
       ? API_ROUTES.INSTITUTION_FACULTIES(form.academicInfo.institution)
+      : "",
+  );
+
+  const {
+    data: programs,
+    loading: programLoading,
+    error: programError,
+  } = useFetch<ProgramList>(
+    form.academicInfo.institution
+      ? API_ROUTES.INSTITUTION_PROGRAMS(form.academicInfo.institution)
       : "",
   );
 
@@ -198,7 +210,15 @@ export default function SignupPage() {
 
     if (result) {
       // Navigate to verification page
-      router.push(APP_ROUTES.SIGNUP_VERIFY);
+      // OTP is sent to email immediately by the API
+      const emailParam = encodeURIComponent(form.basicInfo.email);
+      router.push(`${APP_ROUTES.SIGNUP_VERIFY}?email=${emailParam}`);
+    } else if (!result && error) {
+      showToast({
+        message: error.message || "Signup failed. Please try again.",
+        type: "error",
+        title: "Signup Error",
+      });
     }
   };
 
@@ -206,6 +226,12 @@ export default function SignupPage() {
     schools?.items?.map((school) => ({
       label: school.label,
       value: school.code,
+    })) ?? [];
+
+  const programOptions =
+    programs?.programs?.map((program) => ({
+      label: program.toUpperCase(),
+      value: program,
     })) ?? [];
 
   const facultyOptions =
@@ -223,6 +249,41 @@ export default function SignupPage() {
       label: dept,
       value: dept,
     })) ?? [];
+
+  // Generate admission year options (last 7 years to current year - 1)
+  const currentYear = new Date().getFullYear();
+  const admissionYearOptions = Array.from({ length: 7 }, (_, i) => {
+    const year = currentYear - 1 - i;
+    return {
+      label: year.toString(),
+      value: year.toString(),
+    };
+  }).reverse();
+
+  // Generate level options (100 to 700)
+  const levelOptions = Array.from({ length: 7 }, (_, i) => {
+    const level = (i + 1) * 100;
+    return {
+      label: `${level} Level`,
+      value: level.toString(),
+    };
+  });
+
+  // Generate graduation year options based on selected admission year
+  const graduationYearOptions = form.academicInfo.admissionYear
+    ? Array.from({ length: 7 }, (_, i) => {
+        const year = parseInt(form.academicInfo.admissionYear, 10) + 1 + i;
+        return {
+          label: year.toString(),
+          value: year.toString(),
+        };
+      })
+    : [];
+
+  // Check if the selected graduation year has already passed
+  const hasGraduated =
+    form.academicInfo.expectedGraduationYear &&
+    parseInt(form.academicInfo.expectedGraduationYear, 10) < currentYear;
 
   useEffect(() => {
     console.log(form);
@@ -553,23 +614,17 @@ export default function SignupPage() {
 
           <div>
             <SyncSelect
-              options={[
-                {
-                  label: "Bachelor of Technology",
-                  value: "b.tech",
-                },
-                {
-                  label: "Master of Technology",
-                  value: "m.tech",
-                },
-                {
-                  label: "Doctor of Philosophy",
-                  value: "phd",
-                },
-              ]}
+              options={programOptions}
               label="Program"
               required
-              placeholder="e.g B. Tech"
+              placeholder={
+                programLoading
+                  ? "Loading programs..."
+                  : !form.academicInfo.institution
+                    ? "Select institution first"
+                    : "e.g B. Tech"
+              }
+              disabled={programLoading || !form.academicInfo.institution}
               onChange={(val) =>
                 setForm((f) => ({
                   ...f,
@@ -607,7 +662,9 @@ export default function SignupPage() {
               placeholder={
                 facultiesLoading
                   ? "Loading faculties..."
-                  : "e.g School of Information and Comm..."
+                  : !form.academicInfo.institution
+                    ? "Select institution first"
+                    : "e.g School of Information and Comm..."
               }
               disabled={facultiesLoading || !form.academicInfo.institution}
               onChange={(val) =>
@@ -621,15 +678,11 @@ export default function SignupPage() {
 
           <div>
             <SyncSelect
-              options={[
-                {
-                  label: "100 Level",
-                  value: "100",
-                },
-              ]}
+              options={levelOptions}
               label="Level"
               required
               placeholder="e.g 100"
+              value={form.academicInfo.level}
               onChange={(val) =>
                 setForm((f) => ({
                   ...f,
@@ -641,15 +694,11 @@ export default function SignupPage() {
 
           <div>
             <SyncSelect
-              options={[
-                {
-                  label: "2020",
-                  value: "2020",
-                },
-              ]}
+              options={admissionYearOptions}
               label="Admission Year"
               required
               placeholder="e.g 2020"
+              value={form.academicInfo.admissionYear}
               onChange={(val) =>
                 setForm((f) => ({
                   ...f,
@@ -661,14 +710,15 @@ export default function SignupPage() {
 
           <div>
             <SyncSelect
-              options={[
-                {
-                  label: "2024",
-                  value: "2024",
-                },
-              ]}
+              options={graduationYearOptions}
               label="Expected Graduation Year"
-              placeholder="e.g 2024"
+              placeholder={
+                !form.academicInfo.admissionYear
+                  ? "Select admission year first"
+                  : "e.g 2024"
+              }
+              disabled={!form.academicInfo.admissionYear}
+              value={form.academicInfo.expectedGraduationYear}
               onChange={(val) =>
                 setForm((f) => ({
                   ...f,
@@ -677,6 +727,16 @@ export default function SignupPage() {
                     expectedGraduationYear: val,
                   },
                 }))
+              }
+              warning={hasGraduated ? true : undefined}
+              info={
+                hasGraduated
+                  ? {
+                      message:
+                        "It seems you've already graduated. Please contact support if this is incorrect.",
+                      type: "warning",
+                    }
+                  : undefined
               }
             />
           </div>
@@ -727,52 +787,6 @@ export default function SignupPage() {
               : "Submit"}
         </SyncButton>
       </div>
-
-      {/* Display API response messages */}
-      {error && (
-        <div
-          style={{
-            color: "var(--color-error)",
-            marginTop: "1rem",
-            textAlign: "center",
-          }}
-        >
-          {error.message}
-        </div>
-      )}
-      {status === "error" && message && (
-        <div
-          style={{
-            color: "var(--color-error)",
-            marginTop: "1rem",
-            textAlign: "center",
-          }}
-        >
-          {message}
-        </div>
-      )}
-      {schoolsError && (
-        <div
-          style={{
-            color: "var(--color-error)",
-            marginTop: "1rem",
-            textAlign: "center",
-          }}
-        >
-          {schoolsError.message}
-        </div>
-      )}
-      {!schoolsError && schoolsMessage && (
-        <div
-          style={{
-            color: "var(--color-warning, #e0a800)",
-            marginTop: "1rem",
-            textAlign: "center",
-          }}
-        >
-          {schoolsMessage}
-        </div>
-      )}
     </div>
   );
 }

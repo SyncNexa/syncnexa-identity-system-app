@@ -2,11 +2,14 @@
  * Server-side helper to proxy requests to an upstream API server.
  * Uses `process.env.API_BASE_URL` as the upstream base URL.
  * All endpoints are prefixed with /api/v1 unless explicitly skipped.
+ * Automatically includes the access token from cookies in the Authorization header.
  */
 import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
 type ProxyOptions = {
   skipVersionPrefix?: boolean;
+  skipAuth?: boolean; // Skip adding Authorization header
 };
 
 export async function proxyToApi(
@@ -33,6 +36,19 @@ export async function proxyToApi(
     }
   } catch (e) {
     // ignore header copying issues
+  }
+
+  // Add Authorization header with access token from cookies
+  if (!options?.skipAuth) {
+    try {
+      const cookieStore = await cookies();
+      const accessToken = cookieStore.get("syncnexa_access_token")?.value;
+      if (accessToken) {
+        headers.set("Authorization", `Bearer ${accessToken}`);
+      }
+    } catch (e) {
+      // ignore if cookies are not available
+    }
   }
 
   // Preserve body if present

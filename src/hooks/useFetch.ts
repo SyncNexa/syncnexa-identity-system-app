@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useToast } from "@/hooks/useToast";
 
 const ABORT_TIMEOUT_MS = 30_000;
 const ABORT_RETRY_LIMIT = 3;
@@ -23,8 +24,15 @@ export default function useFetch<T = any>(
   const [message, setMessage] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const endpointRef = useRef<string>(endpoint);
+  const { showToast } = useToast();
 
   const fetchData = useCallback(async () => {
+    // Skip fetch if endpoint is empty
+    if (!endpointRef.current) {
+      setLoading(false);
+      return;
+    }
+
     const url = resolveEndpoint(endpointRef.current);
     abortRef.current?.abort();
     setLoading(true);
@@ -82,6 +90,11 @@ export default function useFetch<T = any>(
               const reason = "Request timed out after 30s.";
               setMessage(reason);
               setError(new Error(reason));
+              showToast({
+                message: reason,
+                type: "error",
+                title: "Request Timeout",
+              });
               return;
             }
 
@@ -94,11 +107,21 @@ export default function useFetch<T = any>(
               "Request was cancelled before completion. Retried 3 times without success.";
             setMessage(reason);
             setError(new Error(reason));
+            showToast({
+              message: reason,
+              type: "error",
+              title: "Request Cancelled",
+            });
             return;
           }
 
           const error = err instanceof Error ? err : new Error(String(err));
           setError(error);
+          showToast({
+            message: error.message,
+            type: "error",
+            title: "Request Failed",
+          });
           // eslint-disable-next-line no-console
           console.error("useFetch error:", err);
           return;
@@ -115,7 +138,9 @@ export default function useFetch<T = any>(
 
   useEffect(() => {
     endpointRef.current = endpoint;
-    fetchData();
+    if (endpoint) {
+      fetchData();
+    }
     return () => abortRef.current?.abort();
   }, [endpoint, fetchData]);
 
