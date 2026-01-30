@@ -32,6 +32,7 @@ export const API_ROUTES = {
     `/api/institutions/${code}/faculties`,
   INSTITUTION_PROGRAMS: (code: string) => `/api/institutions/${code}/programs`,
   USER_VERIFICATION_CENTER: "/api/user/verification-center",
+  USER_SECURITY: "/api/user/security",
 } as const;
 
 // Backend API endpoints - actual backend server paths (proxied)
@@ -49,4 +50,5 @@ export const BACKEND_API_ENDPOINTS = {
   INSTITUTION_FACULTIES: (code: string) => `/institutions/${code}/faculties`,
   INSTITUTION_PROGRAMS: (code: string) => `/institutions/${code}/programs`,
   USER_VERIFICATION_CENTER: "/user/verification-center",
+  USER_SECURITY: "/security",
 } as const;
