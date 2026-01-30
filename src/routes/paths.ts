@@ -20,6 +20,8 @@ export const APP_ROUTES = {
 export const API_ROUTES = {
   LOGIN: "/api/login",
   SIGNUP: "/api/signup",
+  LOGOUT: "/api/auth/logout",
+  REFRESH_TOKEN: "/api/auth/refresh-token",
   OTP_REQUEST: "/api/otp/request",
   OTP_VERIFY: "/api/otp/verify",
   VERIFY_EMAIL_REQUEST: "/api/verify-email/request",
@@ -29,12 +31,16 @@ export const API_ROUTES = {
   INSTITUTION_FACULTIES: (code: string) =>
     `/api/institutions/${code}/faculties`,
   INSTITUTION_PROGRAMS: (code: string) => `/api/institutions/${code}/programs`,
+  USER_VERIFICATION_CENTER: "/api/user/verification-center",
+  USER_SECURITY: "/api/user/security",
 } as const;
 
 // Backend API endpoints - actual backend server paths (proxied)
 export const BACKEND_API_ENDPOINTS = {
   LOGIN: "/auth/login",
   SIGNUP: "/auth/register",
+  LOGOUT: "/auth/logout",
+  REFRESH_TOKEN: "/auth/refresh-token",
   OTP_REQUEST: "/auth/request-otp",
   OTP_VERIFY: "/auth/verify-otp",
   VERIFY_EMAIL_REQUEST: "/auth/verify-email/request",
@@ -43,4 +49,6 @@ export const BACKEND_API_ENDPOINTS = {
   UNIVERSITIES: "/universities",
   INSTITUTION_FACULTIES: (code: string) => `/institutions/${code}/faculties`,
   INSTITUTION_PROGRAMS: (code: string) => `/institutions/${code}/programs`,
+  USER_VERIFICATION_CENTER: "/user/verification-center",
+  USER_SECURITY: "/security",
 } as const;

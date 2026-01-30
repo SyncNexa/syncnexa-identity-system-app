@@ -4,9 +4,9 @@ import { authCookies } from "@/lib/authCookies";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { accessToken, refreshToken, role } = body;
+    const { accessToken, refreshToken, sessionId, role } = body;
 
-    if (!accessToken || !refreshToken) {
+    if (!accessToken || !refreshToken || !sessionId) {
       return NextResponse.json(
         { error: "Missing required tokens" },
         { status: 400 },
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     // Set httpOnly cookies
-    await authCookies.setTokens(accessToken, refreshToken, role);
+    await authCookies.setTokens(accessToken, refreshToken, sessionId, role);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 
 const ACCESS_TOKEN_KEY = "syncnexa_access_token";
 const REFRESH_TOKEN_KEY = "syncnexa_refresh_token";
+const SESSION_ID_KEY = "syncnexa_session_id";
 const USER_ROLE_KEY = "syncnexa_user_role";
 
 // Cookie options for secure storage
@@ -24,6 +25,7 @@ export const authCookies = {
   setTokens: async (
     accessToken: string,
     refreshToken: string,
+    sessionId: string,
     role?: string,
   ) => {
     const cookieStore = await cookies();
@@ -40,6 +42,12 @@ export const authCookies = {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
+    // Session ID - expires in 7 days
+    cookieStore.set(SESSION_ID_KEY, sessionId, {
+      ...COOKIE_OPTIONS,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
     // User role - expires in 7 days
     if (role) {
       cookieStore.set(USER_ROLE_KEY, role, {
@@ -48,6 +56,17 @@ export const authCookies = {
         maxAge: 60 * 60 * 24 * 7,
       });
     }
+  },
+
+  /**
+   * Update access token only (server-side only)
+   */
+  setAccessToken: async (accessToken: string) => {
+    const cookieStore = await cookies();
+    cookieStore.set(ACCESS_TOKEN_KEY, accessToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: 60 * 15, // 15 minutes
+    });
   },
 
   /**
@@ -67,6 +86,14 @@ export const authCookies = {
   },
 
   /**
+   * Get the session ID (server-side only)
+   */
+  getSessionId: async (): Promise<string | undefined> => {
+    const cookieStore = await cookies();
+    return cookieStore.get(SESSION_ID_KEY)?.value;
+  },
+
+  /**
    * Get the user role
    */
   getUserRole: async (): Promise<string | undefined> => {
@@ -81,6 +108,7 @@ export const authCookies = {
     const cookieStore = await cookies();
     cookieStore.delete(ACCESS_TOKEN_KEY);
     cookieStore.delete(REFRESH_TOKEN_KEY);
+    cookieStore.delete(SESSION_ID_KEY);
     cookieStore.delete(USER_ROLE_KEY);
   },
 

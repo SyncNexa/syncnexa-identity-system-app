@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import { useToast } from "@/hooks/useToast";
+import { API_ROUTES } from "@/routes/paths";
 
 type ResolveEndpointFn = (endpoint: string) => string;
 
@@ -63,6 +64,16 @@ export default function usePost<TRes = any, TReq = any>(
       setError(null);
       setMessage(null);
 
+      const refreshAccessToken = async () => {
+        const res = await fetch(API_ROUTES.REFRESH_TOKEN, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        return res.ok;
+      };
+
+      let refreshed = false;
+
       let errorRetries = 0;
       let abortRetries = 0;
       let lastError: any = null;
@@ -96,6 +107,14 @@ export default function usePost<TRes = any, TReq = any>(
             body: bodyToSend,
             signal: controller.signal,
           });
+          if (res.status === 401 && !refreshed) {
+            const didRefresh = await refreshAccessToken();
+            if (didRefresh) {
+              refreshed = true;
+              clearTimeout(timeoutId);
+              continue;
+            }
+          }
           clearTimeout(timeoutId);
 
           if (!res.ok) {

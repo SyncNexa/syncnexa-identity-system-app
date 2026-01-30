@@ -78,6 +78,7 @@ function LoginForm() {
         body: JSON.stringify({
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
+          sessionId: result.sessionId,
           role: result.role,
         }),
       });
