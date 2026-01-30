@@ -37,6 +37,7 @@ interface LoginData {
 interface LoginResponseData {
   accessToken: string;
   refreshToken: string;
+  sessionId: string;
   role: string; // Can only be 'student' | 'developer' | 'admin' | 'staff'
 }
 

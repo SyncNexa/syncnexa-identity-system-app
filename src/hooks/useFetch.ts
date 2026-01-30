@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/useToast";
+import { API_ROUTES } from "@/routes/paths";
 
 const ABORT_TIMEOUT_MS = 30_000;
 const ABORT_RETRY_LIMIT = 3;
@@ -41,7 +42,16 @@ export default function useFetch<T = any>(
 
     let abortRetries = 0;
 
+    const refreshAccessToken = async () => {
+      const res = await fetch(API_ROUTES.REFRESH_TOKEN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      return res.ok;
+    };
+
     const runFetch = async () => {
+      let refreshed = false;
       while (true) {
         const controller = new AbortController();
         abortRef.current = controller;
@@ -57,6 +67,14 @@ export default function useFetch<T = any>(
             signal: controller.signal,
             headers: { "Content-Type": "application/json" },
           });
+          if (res.status === 401 && !refreshed) {
+            const didRefresh = await refreshAccessToken();
+            if (didRefresh) {
+              refreshed = true;
+              clearTimeout(timeoutId);
+              continue;
+            }
+          }
           clearTimeout(timeoutId);
           if (!res.ok)
             throw new Error(`Failed to fetch ${url} (${res.status})`);
