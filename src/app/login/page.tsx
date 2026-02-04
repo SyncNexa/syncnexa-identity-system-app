@@ -72,7 +72,7 @@ function LoginForm() {
     const result = await post(form);
     if (result) {
       // Store tokens in secure httpOnly cookies
-      await fetch("/api/auth/set-tokens", {
+      const tokenResponse = await fetch("/api/auth/set-tokens", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -82,6 +82,16 @@ function LoginForm() {
           role: result.role,
         }),
       });
+
+      if (!tokenResponse.ok) {
+        showToast({
+          message: "Failed to set authentication cookies. Please try again.",
+          type: "error",
+          title: "Authentication Error",
+        });
+        console.error("Set tokens failed:", await tokenResponse.text());
+        return;
+      }
 
       showToast({
         message: "Login successful! Redirecting...",
