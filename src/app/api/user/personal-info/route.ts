@@ -35,16 +35,12 @@ export async function PATCH(req: NextRequest) {
       BACKEND_API_ENDPOINTS.USER_PERSONAL_INFO,
     );
 
-    if (!response.ok) {
-      const error = await response.json();
-      return NextResponse.json(
-        { message: error.message || "Failed to update personal information" },
-        { status: response.status },
-      );
-    }
-
-    const data = await response.json();
-    return NextResponse.json(data);
+    // Pass through all status codes (including 202 for pending verification)
+    const data = await response.text();
+    return new NextResponse(data, {
+      status: response.status,
+      headers: response.headers,
+    });
   } catch (error) {
     console.error("Personal info update error:", error);
     return NextResponse.json(

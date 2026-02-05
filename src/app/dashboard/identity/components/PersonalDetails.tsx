@@ -3,8 +3,9 @@ import styles from "./styles/Components.module.css";
 import SyncInput, { SyncSelect } from "@/components/Input";
 import SyncButton from "@/components/Button";
 import { areFieldsFilled } from "@/utils/sanitizers";
-import { API_ROUTES } from "@/routes/paths";
+import { API_ROUTES, APP_ROUTES } from "@/routes/paths";
 import { useToast } from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
 
 function PersonalDetails({
   address,
@@ -14,6 +15,7 @@ function PersonalDetails({
   gender,
 }: Omit<PersonalInfo, "dateOfBirth">) {
   const { showToast } = useToast();
+  const router = useRouter();
   const [newInfo, setNewInfo] = React.useState<
     Omit<PersonalInfo, "dateOfBirth">
   >({
@@ -33,6 +35,19 @@ function PersonalDetails({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newInfo),
       });
+
+      // Handle 202 Accepted - email verification required
+      if (response.status === 202) {
+        showToast({
+          title: "Verification Required",
+          message: "Please verify your new email address",
+          type: "info",
+        });
+        // Redirect to email verification page with the new email
+        const emailParam = encodeURIComponent(newInfo.email);
+        router.push(`${APP_ROUTES.SIGNUP_VERIFY}?email=${emailParam}`);
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to save personal information");
