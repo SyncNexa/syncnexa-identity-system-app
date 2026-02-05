@@ -104,6 +104,29 @@ function SyncInput({
   };
 
   const handleOtpChange = (index: number, value: string) => {
+    // Handle multi-character input (paste fallback)
+    if (value.length > 1) {
+      const digits = value.replace(/\D/g, "").slice(0, otpLength);
+      if (digits.length === 0) return;
+
+      const newValues = [...otpValues];
+      for (let i = 0; i < digits.length && index + i < otpLength; i++) {
+        newValues[index + i] = digits[i];
+      }
+      setOtpValues(newValues);
+      onValueChange?.(newValues.join(""));
+
+      if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
+        onOtpComplete?.(newValues.join(""));
+      } else if (digits.length >= otpLength - index) {
+        otpRefs.current[otpLength - 1]?.focus();
+      } else {
+        otpRefs.current[index + digits.length]?.focus();
+      }
+      return;
+    }
+
+    // Handle single character input
     if (!/^[0-9]?$/.test(value)) return; // only digits
     const newValues = [...otpValues];
     newValues[index] = value;
@@ -154,10 +177,7 @@ function SyncInput({
     onValueChange?.(newValues.join(""));
 
     // If all fields are filled, trigger completion
-    if (
-      newValues.every((v) => v !== "") &&
-      newValues.length === otpLength
-    ) {
+    if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
       onOtpComplete?.(newValues.join(""));
     } else if (digits.length >= otpLength - index) {
       // If we've filled to the end, focus the last field

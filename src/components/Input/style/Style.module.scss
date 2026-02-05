@@ -401,7 +401,11 @@
       }
 
       &.filled {
-        background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), rgba(var(--color-primary-rgb), 0.02));
+        background: linear-gradient(
+          135deg,
+          rgba(var(--color-primary-rgb), 0.05),
+          rgba(var(--color-primary-rgb), 0.02)
+        );
         border-color: var(--color-primary);
         animation: fillPulse 0.3s ease-out;
       }
