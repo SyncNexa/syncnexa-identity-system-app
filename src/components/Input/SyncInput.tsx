@@ -127,6 +127,44 @@ function SyncInput({
   ) => {
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       otpRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      e.preventDefault();
+      otpRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowRight" && index < otpLength - 1) {
+      e.preventDefault();
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    const digits = pastedText.replace(/\D/g, "").slice(0, otpLength);
+
+    if (digits.length === 0) return;
+
+    const newValues = [...otpValues];
+    for (let i = 0; i < digits.length && index + i < otpLength; i++) {
+      newValues[index + i] = digits[i];
+    }
+    setOtpValues(newValues);
+    onValueChange?.(newValues.join(""));
+
+    // If all fields are filled, trigger completion
+    if (
+      newValues.every((v) => v !== "") &&
+      newValues.length === otpLength
+    ) {
+      onOtpComplete?.(newValues.join(""));
+    } else if (digits.length >= otpLength - index) {
+      // If we've filled to the end, focus the last field
+      otpRefs.current[otpLength - 1]?.focus();
+    } else {
+      // Focus the next empty field
+      otpRefs.current[index + digits.length]?.focus();
     }
   };
 
@@ -585,11 +623,15 @@ function SyncInput({
             value={otpValues[i]}
             onChange={(e) => handleOtpChange(i, e.target.value)}
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
+            onPaste={(e) => handleOtpPaste(i, e)}
             maxLength={1}
             inputMode="numeric"
+            type="text"
+            pattern="[0-9]*"
             aria-label={`OTP digit ${i + 1}`}
             name={name ? `${name}-${i}` : undefined}
             aria-invalid={invalid ? true : undefined}
+            className={otpValues[i] ? Styles.filled : ""}
           />
         ))}
       </div>

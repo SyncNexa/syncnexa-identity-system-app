@@ -361,41 +361,103 @@
 .otpInputWrapper {
   position: relative;
 
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-title);
+    font-weight: 500;
+  }
+
   .otpInput {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 1rem;
-    max-width: 270px;
+    gap: 0.75rem;
+    max-width: 300px;
 
     input {
       display: block;
-      font-size: 1rem;
-      height: 2.7rem;
+      font-size: 1.2rem;
+      height: 2.8rem;
       text-align: center;
       width: 100%;
       background: var(--input);
-      border: 0.1rem solid var(--color-border);
-      font-size: 1.2rem;
-      font-weight: 800;
-      border-radius: 0.4rem;
+      border: 0.15rem solid var(--color-border);
+      font-weight: 700;
+      border-radius: 0.5rem;
+      transition: all 0.2s ease;
+      cursor: text;
+      color: var(--color-title);
+      letter-spacing: 0.05em;
+
+      &:hover {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.05);
+      }
 
       &:focus {
         border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+        outline: none;
+      }
+
+      &.filled {
+        background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), rgba(var(--color-primary-rgb), 0.02));
+        border-color: var(--color-primary);
+        animation: fillPulse 0.3s ease-out;
       }
     }
   }
 
   .downWrapper {
-    margin-top: 1rem;
+    margin-top: 1.2rem;
+    text-align: center;
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--color-placeholder);
+      font-weight: 500;
+    }
 
     span {
       color: var(--color-primary);
+      font-weight: 600;
+    }
 
-      &:first-child {
-        text-decoration: underline;
-        cursor: pointer;
+    button {
+      background: none;
+      border: none;
+      padding: 0.3rem 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      color: var(--color-primary);
+
+      &:hover {
+        opacity: 0.8;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
     }
+  }
+}
+
+@keyframes fillPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
