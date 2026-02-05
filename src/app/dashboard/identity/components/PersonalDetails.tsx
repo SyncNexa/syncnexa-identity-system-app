@@ -3,6 +3,9 @@ import styles from "./styles/Components.module.css";
 import SyncInput, { SyncSelect } from "@/components/Input";
 import SyncButton from "@/components/Button";
 import { areFieldsFilled } from "@/utils/sanitizers";
+import { API_ROUTES } from "@/routes/paths";
+import { useToast } from "@/hooks/useToast";
+
 function PersonalDetails({
   address,
   email,
@@ -10,6 +13,7 @@ function PersonalDetails({
   phoneNumber,
   gender,
 }: Omit<PersonalInfo, "dateOfBirth">) {
+  const { showToast } = useToast();
   const [newInfo, setNewInfo] = React.useState<
     Omit<PersonalInfo, "dateOfBirth">
   >({
@@ -19,6 +23,37 @@ function PersonalDetails({
     phoneNumber,
     gender,
   });
+  const [loading, setLoading] = React.useState(false);
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(API_ROUTES.USER_PERSONAL_INFO, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newInfo),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save personal information");
+      }
+
+      showToast({
+        title: "Success",
+        message: "Personal information updated successfully",
+        type: "success",
+      });
+    } catch (error) {
+      showToast({
+        title: "Error",
+        message:
+          error instanceof Error ? error.message : "Failed to save changes",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className={styles.personal_info}>
       <div className={styles.inner}>
@@ -71,10 +106,10 @@ function PersonalDetails({
       <SyncButton
         label="Save"
         color="green"
-        onClick={() => {}}
+        onClick={handleSave}
         buttonStyles={{ width: "100%", height: "3.5rem" }}
-        // loading
-        disabled={!areFieldsFilled(newInfo)}
+        loading={loading}
+        disabled={!areFieldsFilled(newInfo) || loading}
       />
     </div>
   );
