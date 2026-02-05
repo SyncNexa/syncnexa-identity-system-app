@@ -24,7 +24,7 @@ export function formatDateTime(
     hideAgo: true,
     hideTime: false,
     long: false,
-  }
+  },
 ) {
   const { hideAgo = true, hideTime = false, long = false, locale } = options;
   const parsed = date instanceof Date ? date : new Date(date);
@@ -70,4 +70,51 @@ export function formatDateTime(
     !hideTime ? ` · ${timePart}` : ""
   }${rel}`;
   return short;
+}
+
+/**
+ * Formats a full name with various initial options
+ * @param name - Full name string (e.g., "John Kennedy Doe")
+ * @param options - Formatting options
+ * @returns Formatted name
+ * @example
+ * formatName("John Kennedy Doe") // "John Kennedy D."
+ * formatName("John Kennedy Doe", { initials: "full" }) // "J. K. D."
+ * formatName("John Kennedy Doe", { initials: "half" }) // "John K. D."
+ */
+export function formatName(
+  name: string,
+  options: FormatNameOptions = {},
+): string {
+  const { initials = "medium" } = options;
+
+  if (!name || typeof name !== "string") return "";
+
+  // Split and filter out empty strings
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) return "";
+  if (parts.length === 1) return parts[0]; // Single name, return as is
+
+  switch (initials) {
+    case "full":
+      // All initials: J. K. D.
+      return parts.map((part) => `${part[0].toUpperCase()}.`).join(" ");
+
+    case "half":
+      // First full, rest initials: John K. D.
+      return [
+        parts[0],
+        ...parts.slice(1).map((part) => `${part[0].toUpperCase()}.`),
+      ].join(" ");
+
+    case "medium":
+    default:
+      // All but last full, last initial: John Kennedy D.
+      if (parts.length === 1) return parts[0];
+      return [
+        ...parts.slice(0, -1),
+        `${parts[parts.length - 1][0].toUpperCase()}.`,
+      ].join(" ");
+  }
 }

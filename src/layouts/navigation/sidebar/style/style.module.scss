@@ -66,6 +66,29 @@
           object-fit: cover;
         }
 
+        .profileImage {
+          width: 3rem;
+          height: 3rem;
+          border: 0.15rem solid var(--color-primary);
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .avatarFallback {
+          width: 3rem;
+          height: 3rem;
+          border: 0.15rem solid var(--color-primary);
+          border-radius: 50%;
+          background: var(--color-primary);
+          color: var(--color-white);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 600;
+          font-size: 1.1rem;
+          flex-shrink: 0;
+        }
+
         div {
           position: relative;
 

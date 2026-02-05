@@ -10,6 +10,8 @@ import { useState } from "react";
 import SyncInput from "@/components/Input";
 import PersonalDetails from "./components/PersonalDetails";
 import AcademicInfo from "./components/AcademicInfo";
+import { API_ROUTES } from "@/routes/paths";
+import useFetch from "@/hooks/useFetch";
 
 function Identity() {
   const [active, setActive] = useState(0);
@@ -22,6 +24,31 @@ function Identity() {
     content: null,
     title: "",
   });
+
+  const {
+    data: personalInfo,
+    loading: personalLoading,
+    error: personalError,
+  } = useFetch<PersonalInfo>(API_ROUTES.USER_PERSONAL_INFO);
+
+  const {
+    data: academicInfo,
+    loading: academicLoading,
+    error: academicError,
+  } = useFetch<AcademicDetails>(API_ROUTES.USER_ACADEMIC_DETAILS);
+
+  const loading = personalLoading || academicLoading;
+
+  if (loading) {
+    return (
+      <DashboardLayout
+        pageTitle="Identity Management"
+        sub="Manage all personal and academic data"
+      >
+        <div>Loading...</div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout
@@ -46,12 +73,25 @@ function Identity() {
               cells={[
                 {
                   header: "Institution",
-                  label: "Federal University of Technology Owerri",
+                  label: academicInfo?.institution || "N/A",
                 },
-                { header: "Department/Level", label: "Computer Science/500" },
-                { header: "Program", label: "Undergraduate program" },
-                { header: "Registration Number", label: "456789678" },
-                { header: "Entry Year/Graduation year", label: "2021/2026" },
+                {
+                  header: "Department/Level",
+                  label: academicInfo
+                    ? `${academicInfo.department}/${academicInfo.level}`
+                    : "N/A",
+                },
+                { header: "Program", label: academicInfo?.program || "N/A" },
+                {
+                  header: "Registration Number",
+                  label: academicInfo?.matricNumber || "N/A",
+                },
+                {
+                  header: "Entry Year/Graduation year",
+                  label: academicInfo
+                    ? `${academicInfo.admissionYear}/${academicInfo.expectedGraduationYear}`
+                    : "N/A",
+                },
               ]}
               title=""
               // info="Last updated: Feb 12, 2025"
@@ -84,11 +124,18 @@ function Identity() {
           ) : (
             <SectionTable
               cells={[
-                { header: "Full Name", label: "John Doe" },
-                { header: "Date of Birth", label: "January 1, 1990" },
-                { header: "Email", label: "john.doe@example.com" },
-                { header: "Phone Number", label: "+1 234 567 8901" },
-                { header: "Address", label: "123 Main St, Anytown, USA" },
+                { header: "Full Name", label: personalInfo?.fullName || "N/A" },
+                // {
+                //   header: "Date of Birth",
+                //   label: personalInfo?.dateOfBirth || "N/A",
+                // },
+                { header: "Gender", label: personalInfo?.gender || "N/A" },
+                { header: "Email", label: personalInfo?.email || "N/A" },
+                {
+                  header: "Phone Number",
+                  label: personalInfo?.phoneNumber || "N/A",
+                },
+                { header: "Address", label: personalInfo?.address || "N/A" },
               ]}
               title=""
               // info="Last updated: Feb 12, 2025"
@@ -103,10 +150,11 @@ function Identity() {
                       variant="light"
                       color="light"
                       onClick={() =>
+                        personalInfo &&
                         setModal((prev) => ({
                           ...prev,
                           open: !prev.open,
-                          content: <PersonalDetails />,
+                          content: <PersonalDetails {...personalInfo} />,
                           title: "Edit Personal Information",
                         }))
                       }
@@ -123,11 +171,17 @@ function Identity() {
         <div className={styles.grid}>
           <SectionTable
             cells={[
-              { header: "Full Name", label: "John Doe" },
-              { header: "Date of Birth", label: "January 1, 1990" },
-              { header: "Email", label: "john.doe@example.com" },
-              { header: "Phone Number", label: "+1 234 567 8901" },
-              { header: "Address", label: "123 Main St, Anytown, USA" },
+              { header: "Full Name", label: personalInfo?.fullName || "N/A" },
+              // {
+              //   header: "Date of Birth",
+              //   label: personalInfo?.dateOfBirth || "N/A",
+              // },
+              { header: "Email", label: personalInfo?.email || "N/A" },
+              {
+                header: "Phone Number",
+                label: personalInfo?.phoneNumber || "N/A",
+              },
+              { header: "Address", label: personalInfo?.address || "N/A" },
             ]}
             title="Personal Information"
             info="Last updated: Feb 12, 2025"
@@ -142,10 +196,11 @@ function Identity() {
                     variant="light"
                     color="light"
                     onClick={() =>
+                      personalInfo &&
                       setModal((prev) => ({
                         ...prev,
                         open: !prev.open,
-                        content: <PersonalDetails />,
+                        content: <PersonalDetails {...personalInfo} />,
                         title: "Edit Personal Information",
                       }))
                     }
@@ -161,12 +216,25 @@ function Identity() {
             cells={[
               {
                 header: "Institution",
-                label: "Federal University of Technology Owerri",
+                label: academicInfo?.institution || "N/A",
               },
-              { header: "Department/Level", label: "Computer Science/500" },
-              { header: "Program", label: "Undergraduate program" },
-              { header: "Registration Number", label: "456789678" },
-              { header: "Entry Year/Graduation year", label: "2021/2026" },
+              {
+                header: "Department/Level",
+                label: academicInfo
+                  ? `${academicInfo.department}/${academicInfo.level}`
+                  : "N/A",
+              },
+              { header: "Program", label: academicInfo?.program || "N/A" },
+              {
+                header: "Registration Number",
+                label: academicInfo?.matricNumber || "N/A",
+              },
+              {
+                header: "Entry Year/Graduation year",
+                label: academicInfo
+                  ? `${academicInfo.admissionYear}/${academicInfo.expectedGraduationYear}`
+                  : "N/A",
+              },
             ]}
             title="Academic Information"
             info="Last updated: Feb 12, 2025"

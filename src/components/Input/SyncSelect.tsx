@@ -51,12 +51,12 @@ function SyncSelect({
 }: SyncSelectProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const generatedName = useRef(
-    name || `syncselect-${Math.random().toString(36).slice(2, 9)}`
+    name || `syncselect-${Math.random().toString(36).slice(2, 9)}`,
   );
   const isControlled = useMemo(() => value !== undefined, [value]);
   const [open, setOpen] = useState(false);
   const [internalValue, setInternalValue] = useState<string>(
-    value ?? defaultValue ?? ""
+    value ?? defaultValue ?? "",
   );
 
   useEffect(() => {
@@ -64,6 +64,12 @@ function SyncSelect({
       setInternalValue(value);
     }
   }, [value]);
+
+  useEffect(() => {
+    if (!isControlled && defaultValue !== undefined) {
+      setInternalValue(defaultValue);
+    }
+  }, [defaultValue, isControlled]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,7 +91,7 @@ function SyncSelect({
     };
   }, []);
 
-  const selectedValue = isControlled ? value ?? "" : internalValue;
+  const selectedValue = isControlled ? (value ?? "") : internalValue;
   const selectedOption = options.find((opt) => opt.value === selectedValue);
 
   const handleSelect = (opt: SelectOption) => {

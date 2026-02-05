@@ -423,6 +423,7 @@
 }
 .doc_uploader .wrapper .label {
   width: 100%;
+  color: var(--color-title);
 }
 .doc_uploader .wrapper .inner {
   position: relative;

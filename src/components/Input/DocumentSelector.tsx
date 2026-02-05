@@ -15,12 +15,26 @@ function DocumentSelector({
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  const acceptFormats = formats.map((format) => `.${format}`).join(",");
+
+  function isValidFormat(file: File): boolean {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    return fileExtension
+      ? formats.includes(fileExtension as FileFormat)
+      : false;
+  }
+
   function processFiles(files: FileList | File[]) {
     const fileArray = Array.from(files);
 
     fileArray.forEach((file) => {
+      if (!isValidFormat(file)) {
+        console.warn(`File format not supported: ${file.name}`);
+        return;
+      }
       const url = URL.createObjectURL(file);
       setPreview(url);
+      onSelect(file);
     });
   }
 
@@ -103,6 +117,7 @@ function DocumentSelector({
               ref={inputRef}
               type="file"
               className={styles.select}
+              accept={acceptFormats}
               onChange={handleLoad}
             />
           </div>

@@ -1,12 +1,12 @@
 import React from "react";
-import styles from "../styles/Identity.module.css";
+import styles from "./styles/Components.module.css";
 import SyncInput from "@/components/Input";
 import SyncButton from "@/components/Button";
 import DocumentSelector from "@/components/Input/DocumentSelector";
 
 function AcademicInfo() {
   return (
-    <div className={styles.modal_wrapper}>
+    <div className={styles.academic_info}>
       <div className={styles.big}>
         <SyncInput
           label="Reason for correction"
