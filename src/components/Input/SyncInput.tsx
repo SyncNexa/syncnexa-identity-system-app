@@ -104,12 +104,22 @@ function SyncInput({
   };
 
   const handleOtpChange = (index: number, value: string) => {
-    // Handle multi-character input (paste fallback)
+    // If the value is empty (deletion), just clear the field
+    if (value === "") {
+      const newValues = [...otpValues];
+      newValues[index] = "";
+      setOtpValues(newValues);
+      onValueChange?.(newValues.join(""));
+      return;
+    }
+
+    // Handle multi-character input (paste)
     if (value.length > 1) {
-      const digits = value.replace(/\D/g, "").slice(0, otpLength);
+      const digits = value.replace(/\D/g, "");
       if (digits.length === 0) return;
 
       const newValues = [...otpValues];
+      // Fill from current index onwards
       for (let i = 0; i < digits.length && index + i < otpLength; i++) {
         newValues[index + i] = digits[i];
       }
@@ -118,6 +128,7 @@ function SyncInput({
 
       if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
         onOtpComplete?.(newValues.join(""));
+        otpRefs.current[otpLength - 1]?.focus();
       } else if (digits.length >= otpLength - index) {
         otpRefs.current[otpLength - 1]?.focus();
       } else {
@@ -126,19 +137,22 @@ function SyncInput({
       return;
     }
 
-    // Handle single character input
-    if (!/^[0-9]?$/.test(value)) return; // only digits
+    // Handle single character input (typing)
+    if (!/^[0-9]$/.test(value)) return; // only single digit
+    
     const newValues = [...otpValues];
     newValues[index] = value;
     setOtpValues(newValues);
 
-    if (value && index < otpLength - 1) {
-      otpRefs.current[index + 1]?.focus();
-    }
-
     const joined = newValues.join("");
     onValueChange?.(joined);
 
+    // Auto-focus next field
+    if (index < otpLength - 1) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    // Check if all fields are filled
     if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
       onOtpComplete?.(newValues.join(""));
     }
