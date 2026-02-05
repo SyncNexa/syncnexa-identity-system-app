@@ -13,8 +13,11 @@ import LinkIcon from "@/assets/icons/Link";
 import SecurityIcon from "@/assets/icons/Security";
 import Image from "next/image";
 import { useCustomNavigation } from "@/hooks/useCustomNavigation";
+import { useUser } from "@/contexts/UserContext";
+import { formatName } from "@/utils/formatters";
 
 function SideBar() {
+  const { user, loading, error, refetch } = useUser();
   const pathname = usePathname();
   const { open, toggleOpen } = useCustomNavigation();
   const upTabs = [
@@ -126,8 +129,14 @@ function SideBar() {
     },
   ];
   return (
-    <nav className={`${styles.nav} ${open ? styles.active : ""}`}>
-      <div className={styles.wrapper}>
+    <nav
+      className={`${styles.nav} ${open ? styles.active : ""}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleOpen();
+      }}
+    >
+      <div className={styles.wrapper} onClick={(e) => e.stopPropagation()}>
         <div className={styles.container}>
           {upTabs.map((tab, i) => (
             <Link
@@ -154,16 +163,23 @@ function SideBar() {
             </Link>
           ))}
           <div className={styles.user_profile}>
-            <Image
-              src={"/next.svg"}
-              alt=""
-              width={50}
-              height={50}
-              quality={100}
-            />
+            {user?.profileImage ? (
+              <Image
+                src={user.profileImage}
+                alt={user.fullName || "User"}
+                width={50}
+                height={50}
+                quality={100}
+                className={styles.profileImage}
+              />
+            ) : (
+              <div className={styles.avatarFallback}>
+                {formatName(user?.fullName ?? "", { initials: "full" })}
+              </div>
+            )}
             <div>
-              <b>Osuagwu C.F</b>
-              <small>Student</small>
+              <b>{formatName(user?.fullName ?? "")}</b>
+              <small>{user?.role || "Guest"}</small>
             </div>
           </div>
         </div>

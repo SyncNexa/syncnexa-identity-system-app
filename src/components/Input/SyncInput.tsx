@@ -40,6 +40,40 @@ function SyncInput({
   const [timer, setTimer] = useState(resendDelay);
   const [resendEnabled, setResendEnabled] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [dateValue, setDateValue] = useState<string>("");
+
+  // Helper function to convert various date formats to YYYY-MM-DD
+  const convertToDateInputFormat = (value: any): string => {
+    if (!value) return "";
+
+    // If it's already in YYYY-MM-DD format, return as is
+    if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return value;
+    }
+
+    try {
+      // Try to parse various date formats
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        // Format as YYYY-MM-DD
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+    } catch (e) {
+      // ignore parsing errors
+    }
+
+    return "";
+  };
+
+  // Initialize date value from prop
+  useEffect(() => {
+    if (inputType === "date" && propValue) {
+      setDateValue(convertToDateInputFormat(propValue));
+    }
+  }, [propValue, inputType]);
 
   useEffect(() => {
     if (inputType !== "otp") return;
@@ -61,19 +95,77 @@ function SyncInput({
     onChange?.(e as any);
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDateValue(value);
+    // Pass the YYYY-MM-DD format to parent
+    onValueChange?.(value);
+    onChange?.(e);
+  };
+
   const handleOtpChange = (index: number, value: string) => {
-    if (!/^[0-9]?$/.test(value)) return; // only digits
+    // If the value is empty (deletion), just clear the field
+    if (value === "") {
+      const newValues = [...otpValues];
+      newValues[index] = "";
+      setOtpValues(newValues);
+      onValueChange?.(newValues.join(""));
+      return;
+    }
+
+    // Handle multi-character input (paste)
+    if (value.length > 1) {
+      const digits = value.replace(/\D/g, "");
+      if (digits.length === 0) return;
+
+      const newValues = [...otpValues];
+
+      // If pasting a full OTP code, start from beginning
+      if (digits.length >= otpLength) {
+        for (let i = 0; i < otpLength; i++) {
+          newValues[i] = digits[i];
+        }
+      } else {
+        // Otherwise fill from current index
+        for (let i = 0; i < digits.length && index + i < otpLength; i++) {
+          newValues[index + i] = digits[i];
+        }
+      }
+
+      setOtpValues(newValues);
+      onValueChange?.(newValues.join(""));
+
+      if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
+        onOtpComplete?.(newValues.join(""));
+        otpRefs.current[otpLength - 1]?.focus();
+      } else {
+        const lastFilledIndex = Math.min(
+          digits.length >= otpLength
+            ? otpLength - 1
+            : index + digits.length - 1,
+          otpLength - 1,
+        );
+        otpRefs.current[lastFilledIndex]?.focus();
+      }
+      return;
+    }
+
+    // Handle single character input (typing)
+    if (!/^[0-9]$/.test(value)) return; // only single digit
+
     const newValues = [...otpValues];
     newValues[index] = value;
     setOtpValues(newValues);
 
-    if (value && index < otpLength - 1) {
-      otpRefs.current[index + 1]?.focus();
-    }
-
     const joined = newValues.join("");
     onValueChange?.(joined);
 
+    // Auto-focus next field
+    if (index < otpLength - 1) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    // Check if all fields are filled
     if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
       onOtpComplete?.(newValues.join(""));
     }
@@ -85,6 +177,53 @@ function SyncInput({
   ) => {
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       otpRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      e.preventDefault();
+      otpRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowRight" && index < otpLength - 1) {
+      e.preventDefault();
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    const digits = pastedText.replace(/\D/g, "");
+
+    if (digits.length === 0) return;
+
+    const newValues = [...otpValues];
+
+    // If pasting a full OTP code, start from beginning
+    if (digits.length >= otpLength) {
+      for (let i = 0; i < otpLength; i++) {
+        newValues[i] = digits[i];
+      }
+    } else {
+      // Otherwise fill from current index
+      for (let i = 0; i < digits.length && index + i < otpLength; i++) {
+        newValues[index + i] = digits[i];
+      }
+    }
+
+    setOtpValues(newValues);
+    onValueChange?.(newValues.join(""));
+
+    // If all fields are filled, trigger completion
+    if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
+      onOtpComplete?.(newValues.join(""));
+      otpRefs.current[otpLength - 1]?.focus();
+    } else {
+      // Focus the last filled field
+      const lastFilledIndex = Math.min(
+        digits.length >= otpLength ? otpLength - 1 : index + digits.length - 1,
+        otpLength - 1,
+      );
+      otpRefs.current[lastFilledIndex]?.focus();
     }
   };
 
@@ -164,27 +303,61 @@ function SyncInput({
   useEffect(() => {
     if (inputType !== "phone") return;
     if (!propValue) return;
+    if (countries.length === 0) return; // Wait for countries to load
+
     try {
       const parsed = parsePhoneNumberFromString(String(propValue));
       if (parsed && parsed.isValid()) {
         setPhoneDigits(parsed.nationalNumber.toString());
         setPhoneDisplay(parsed.formatNational());
-        // try to select a matching country if possible
-        if (!selectedCountry && parsed.country && countries.length > 0) {
+        // Always try to match and set the country from the parsed number
+        if (parsed.country) {
           const match = countries.find((c) => c.cca2 === parsed.country);
-          if (match) setSelectedCountry(match);
+          if (match) {
+            setSelectedCountry(match);
+          }
         }
       } else {
-        const digits = String(propValue).replace(/\D/g, "");
-        setPhoneDigits(digits);
-        setPhoneDisplay(formatPhoneDisplay(digits));
+        // Try to extract country code by matching starting digits
+        const rawValue = String(propValue).replace(/\D/g, "");
+        let matched = false;
+
+        // Sort by code length descending to match longer codes first
+        const sortedCountries = [...countries].sort(
+          (a, b) =>
+            b.callingCode.replace(/\D/g, "").length -
+            a.callingCode.replace(/\D/g, "").length,
+        );
+
+        for (const country of sortedCountries) {
+          const code = country.callingCode.replace(/\D/g, "");
+          if (rawValue.startsWith(code)) {
+            const remainingDigits = rawValue.slice(code.length);
+            // Try parsing with this country
+            const testNumber = `${country.callingCode}${remainingDigits}`;
+            const testParsed = parsePhoneNumberFromString(testNumber);
+            if (testParsed && testParsed.isValid()) {
+              setSelectedCountry(country);
+              setPhoneDigits(remainingDigits);
+              setPhoneDisplay(testParsed.formatNational());
+              matched = true;
+              break;
+            }
+          }
+        }
+
+        if (!matched) {
+          // Fallback: display as-is
+          const digits = rawValue;
+          setPhoneDigits(digits);
+          setPhoneDisplay(formatPhoneDisplay(digits));
+        }
       }
     } catch (err) {
       // ignore parsing errors
     }
-    // only run when propValue changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propValue]);
+  }, [propValue, countries.length, inputType]);
 
   const formatPhoneDisplay = (digits: string) => {
     const parts: string[] = [];
@@ -401,6 +574,49 @@ function SyncInput({
         </div>
       );
     }
+
+    if (inputType === "date") {
+      return (
+        <div
+          className={Styles.inputWrapper + (className ? ` ${className}` : "")}
+        >
+          {label && (
+            <label htmlFor={generatedId.current}>
+              {label}
+              {required && <span>*</span>}
+            </label>
+          )}
+          <div
+            className={`${Styles.input} ${
+              invalid ? Styles.error : warning ? Styles.warning : ""
+            }`}
+          >
+            {leftNode}
+            <input
+              id={generatedId.current}
+              ref={inputRef}
+              placeholder={placeholder}
+              onChange={handleDateChange}
+              type="date"
+              aria-invalid={invalid ? true : undefined}
+              name={name}
+              value={dateValue}
+              {...rest}
+            />
+            {rightNode}
+          </div>
+          {info && (
+            <div
+              className={`${Styles.validationMessage} ${Styles[info.type]}`}
+              role={info.type === "error" ? "alert" : "status"}
+            >
+              {info.message}
+            </div>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className={Styles.inputWrapper + (className ? ` ${className}` : "")}>
         {label && (
@@ -466,11 +682,15 @@ function SyncInput({
             value={otpValues[i]}
             onChange={(e) => handleOtpChange(i, e.target.value)}
             onKeyDown={(e) => handleOtpKeyDown(i, e)}
+            onPaste={(e) => handleOtpPaste(i, e)}
             maxLength={1}
             inputMode="numeric"
+            type="text"
+            pattern="[0-9]*"
             aria-label={`OTP digit ${i + 1}`}
             name={name ? `${name}-${i}` : undefined}
             aria-invalid={invalid ? true : undefined}
+            className={otpValues[i] ? Styles.filled : ""}
           />
         ))}
       </div>
