@@ -119,7 +119,7 @@ function SyncInput({
       if (digits.length === 0) return;
 
       const newValues = [...otpValues];
-      
+
       // If pasting a full OTP code, start from beginning
       if (digits.length >= otpLength) {
         for (let i = 0; i < otpLength; i++) {
@@ -131,7 +131,7 @@ function SyncInput({
           newValues[index + i] = digits[i];
         }
       }
-      
+
       setOtpValues(newValues);
       onValueChange?.(newValues.join(""));
 
@@ -140,7 +140,9 @@ function SyncInput({
         otpRefs.current[otpLength - 1]?.focus();
       } else {
         const lastFilledIndex = Math.min(
-          digits.length >= otpLength ? otpLength - 1 : index + digits.length - 1,
+          digits.length >= otpLength
+            ? otpLength - 1
+            : index + digits.length - 1,
           otpLength - 1,
         );
         otpRefs.current[lastFilledIndex]?.focus();
