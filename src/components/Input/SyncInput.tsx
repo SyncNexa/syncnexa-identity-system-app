@@ -139,7 +139,7 @@ function SyncInput({
 
     // Handle single character input (typing)
     if (!/^[0-9]$/.test(value)) return; // only single digit
-    
+
     const newValues = [...otpValues];
     newValues[index] = value;
     setOtpValues(newValues);
@@ -179,26 +179,38 @@ function SyncInput({
   ) => {
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text");
-    const digits = pastedText.replace(/\D/g, "").slice(0, otpLength);
+    const digits = pastedText.replace(/\D/g, "");
 
     if (digits.length === 0) return;
 
     const newValues = [...otpValues];
-    for (let i = 0; i < digits.length && index + i < otpLength; i++) {
-      newValues[index + i] = digits[i];
+    
+    // If pasting a full OTP code, start from beginning
+    if (digits.length >= otpLength) {
+      for (let i = 0; i < otpLength; i++) {
+        newValues[i] = digits[i];
+      }
+    } else {
+      // Otherwise fill from current index
+      for (let i = 0; i < digits.length && index + i < otpLength; i++) {
+        newValues[index + i] = digits[i];
+      }
     }
+    
     setOtpValues(newValues);
     onValueChange?.(newValues.join(""));
 
     // If all fields are filled, trigger completion
     if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
       onOtpComplete?.(newValues.join(""));
-    } else if (digits.length >= otpLength - index) {
-      // If we've filled to the end, focus the last field
       otpRefs.current[otpLength - 1]?.focus();
     } else {
-      // Focus the next empty field
-      otpRefs.current[index + digits.length]?.focus();
+      // Focus the last filled field
+      const lastFilledIndex = Math.min(
+        digits.length >= otpLength ? otpLength - 1 : index + digits.length - 1,
+        otpLength - 1
+      );
+      otpRefs.current[lastFilledIndex]?.focus();
     }
   };
 
