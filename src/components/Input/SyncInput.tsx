@@ -119,20 +119,31 @@ function SyncInput({
       if (digits.length === 0) return;
 
       const newValues = [...otpValues];
-      // Fill from current index onwards
-      for (let i = 0; i < digits.length && index + i < otpLength; i++) {
-        newValues[index + i] = digits[i];
+      
+      // If pasting a full OTP code, start from beginning
+      if (digits.length >= otpLength) {
+        for (let i = 0; i < otpLength; i++) {
+          newValues[i] = digits[i];
+        }
+      } else {
+        // Otherwise fill from current index
+        for (let i = 0; i < digits.length && index + i < otpLength; i++) {
+          newValues[index + i] = digits[i];
+        }
       }
+      
       setOtpValues(newValues);
       onValueChange?.(newValues.join(""));
 
       if (newValues.every((v) => v !== "") && newValues.length === otpLength) {
         onOtpComplete?.(newValues.join(""));
         otpRefs.current[otpLength - 1]?.focus();
-      } else if (digits.length >= otpLength - index) {
-        otpRefs.current[otpLength - 1]?.focus();
       } else {
-        otpRefs.current[index + digits.length]?.focus();
+        const lastFilledIndex = Math.min(
+          digits.length >= otpLength ? otpLength - 1 : index + digits.length - 1,
+          otpLength - 1,
+        );
+        otpRefs.current[lastFilledIndex]?.focus();
       }
       return;
     }
@@ -184,7 +195,7 @@ function SyncInput({
     if (digits.length === 0) return;
 
     const newValues = [...otpValues];
-    
+
     // If pasting a full OTP code, start from beginning
     if (digits.length >= otpLength) {
       for (let i = 0; i < otpLength; i++) {
@@ -196,7 +207,7 @@ function SyncInput({
         newValues[index + i] = digits[i];
       }
     }
-    
+
     setOtpValues(newValues);
     onValueChange?.(newValues.join(""));
 
@@ -208,7 +219,7 @@ function SyncInput({
       // Focus the last filled field
       const lastFilledIndex = Math.min(
         digits.length >= otpLength ? otpLength - 1 : index + digits.length - 1,
-        otpLength - 1
+        otpLength - 1,
       );
       otpRefs.current[lastFilledIndex]?.focus();
     }
