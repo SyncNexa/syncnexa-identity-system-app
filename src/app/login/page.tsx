@@ -31,7 +31,7 @@ export default function LoginPage() {
             value={form.email}
             onChange={onChange}
             className={styles.SyncInput}
-            placeholder="e.g john.doe@example.com"
+            placeholder="e.g john.dooe@example.com"
             inputType="email"
           />
         </div>
