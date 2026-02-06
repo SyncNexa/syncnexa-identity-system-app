@@ -10,6 +10,11 @@
   align-items: center;
   justify-content: center;
 }
+@media screen and (max-width: 1024px) {
+  .layout .left_panel {
+    display: none;
+  }
+}
 .layout .left_panel h1 {
   background: linear-gradient(121deg, #fff 24.28%, #ffbafa 50.49%, #75ffda 75.72%);
   background-clip: text;

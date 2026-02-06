@@ -1,5 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
+import { useToast } from "@/hooks/useToast";
+import { API_ROUTES } from "@/routes/paths";
 
 type ResolveEndpointFn = (endpoint: string) => string;
 
@@ -11,32 +13,20 @@ const resolveEndpoint: ResolveEndpointFn = (endpoint) => {
   return `/api/${endpoint}`;
 };
 
-type PostOptions<TRes> = {
-  headers?: Record<string, string>;
-  optimisticData?: TRes | null; // set optimistic data immediately
-  retry?: number; // number of retries on failure
-  retryDelay?: number; // ms between retries
-  rawResponse?: boolean; // if true, return Response instead of parsed json
-};
-
-type UsePostReturn<TRes, TReq> = {
-  loading: boolean;
-  data: TRes | null;
-  error: Error | null;
-  post: (body?: TReq, opts?: PostOptions<TRes>) => Promise<TRes | null>;
-  reset: () => void;
-  abort: () => void;
-  setData: (d: TRes | null) => void;
-};
+const ABORT_TIMEOUT_MS = 30_000;
+const ABORT_RETRY_LIMIT = 3;
 
 export default function usePost<TRes = any, TReq = any>(
-  endpoint: string
+  endpoint: string,
 ): UsePostReturn<TRes, TReq> {
   const [data, setData] = useState<TRes | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const endpointRef = useRef<string>(endpoint);
+  const { showToast } = useToast();
 
   const abort = useCallback(() => {
     abortRef.current?.abort();
@@ -46,6 +36,8 @@ export default function usePost<TRes = any, TReq = any>(
     abort();
     setData(null);
     setError(null);
+    setStatus(null);
+    setMessage(null);
     setLoading(false);
   }, [abort]);
 
@@ -53,8 +45,6 @@ export default function usePost<TRes = any, TReq = any>(
     async (body?: TReq, opts?: PostOptions<TRes>) => {
       endpointRef.current = endpoint;
       const url = resolveEndpoint(endpointRef.current);
-      const controller = new AbortController();
-      abortRef.current = controller;
 
       const {
         headers = {},
@@ -72,8 +62,32 @@ export default function usePost<TRes = any, TReq = any>(
 
       setLoading(true);
       setError(null);
+      setMessage(null);
 
-      const perform = async (): Promise<TRes | null> => {
+      const refreshAccessToken = async () => {
+        const res = await fetch(API_ROUTES.REFRESH_TOKEN, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        return res.ok;
+      };
+
+      let refreshed = false;
+
+      let errorRetries = 0;
+      let abortRetries = 0;
+      let lastError: any = null;
+      let handledError = false;
+
+      while (true) {
+        const controller = new AbortController();
+        abortRef.current = controller;
+        let timedOut = false;
+        const timeoutId = setTimeout(() => {
+          timedOut = true;
+          controller.abort();
+        }, ABORT_TIMEOUT_MS);
+
         try {
           let bodyToSend: any = undefined;
           const requestHeaders: Record<string, string> = { ...headers };
@@ -93,10 +107,30 @@ export default function usePost<TRes = any, TReq = any>(
             body: bodyToSend,
             signal: controller.signal,
           });
+          if (res.status === 401 && !refreshed) {
+            const didRefresh = await refreshAccessToken();
+            if (didRefresh) {
+              refreshed = true;
+              clearTimeout(timeoutId);
+              continue;
+            }
+          }
+          clearTimeout(timeoutId);
 
           if (!res.ok) {
             const text = await res.text().catch(() => "");
-            throw new Error(`POST ${url} failed (${res.status}): ${text}`);
+            let errorMessage = `Request failed with status ${res.status}`;
+
+            try {
+              const errorJson = JSON.parse(text);
+              if (errorJson.message) {
+                errorMessage = errorJson.message;
+              }
+            } catch {
+              if (text) errorMessage = text;
+            }
+
+            throw new Error(errorMessage);
           }
 
           if (rawResponse) {
@@ -114,40 +148,93 @@ export default function usePost<TRes = any, TReq = any>(
             parsed = await res.text();
           }
 
-          setData(parsed as TRes);
-          setError(null);
-          return parsed as TRes;
-        } catch (err) {
-          if ((err as any)?.name === "AbortError") {
-            // aborted
-            throw err;
-          }
-          // rethrow to allow retry logic
-          throw err;
-        }
-      };
+          // Handle APIResponse structure
+          if (
+            parsed &&
+            typeof parsed === "object" &&
+            "status" in parsed &&
+            "data" in parsed
+          ) {
+            setStatus(parsed.status);
+            setMessage(parsed.message || null);
+            setData(parsed.data as TRes);
+            setError(null);
+            setLoading(false);
 
-      // retry loop
-      let attempts = 0;
-      let lastError: any = null;
-      while (attempts <= retry) {
-        try {
-          const result = await perform();
-          setLoading(false);
-          return result;
+            // Show success toast
+            if (parsed.message) {
+              showToast({
+                message: parsed.message,
+                type: "success",
+                title: "Success",
+              });
+            }
+
+            return parsed.data as TRes;
+          } else {
+            // Fallback for non-APIResponse format
+            setData(parsed as TRes);
+            setError(null);
+            setLoading(false);
+            return parsed as TRes;
+          }
         } catch (err) {
+          clearTimeout(timeoutId);
+
+          if ((err as any)?.name === "AbortError") {
+            if (timedOut) {
+              const reason = "Request timed out after 30s.";
+              setMessage(reason);
+              setError(new Error(reason));
+              showToast({
+                message: reason,
+                type: "error",
+                title: "Request Timeout",
+              });
+              handledError = true;
+              break;
+            }
+
+            abortRetries += 1;
+            if (abortRetries <= ABORT_RETRY_LIMIT) {
+              continue; // retry cancelled request
+            }
+
+            const reason =
+              "Request was cancelled before completion. Retried 3 times without success.";
+            setMessage(reason);
+            setError(new Error(reason));
+            showToast({
+              message: reason,
+              type: "error",
+              title: "Request Cancelled",
+            });
+            handledError = true;
+            break;
+          }
+
           lastError = err;
-          attempts += 1;
-          if (attempts > retry) break;
-          // wait
-          await new Promise((r) => setTimeout(r, retryDelay));
+          errorRetries += 1;
+          if (errorRetries <= retry) {
+            await new Promise((r) => setTimeout(r, retryDelay));
+            continue;
+          }
+          break;
         }
       }
 
       // failed after retries
-      setError(
-        lastError instanceof Error ? lastError : new Error(String(lastError))
-      );
+      if (!handledError) {
+        const err =
+          lastError instanceof Error ? lastError : new Error(String(lastError));
+        setError(err);
+        showToast({
+          message: err.message,
+          type: "error",
+          title: "Request Failed",
+        });
+      }
+
       // rollback optimistic update
       if (typeof optimisticData !== "undefined" && optimisticData !== null) {
         setData(previous ?? null);
@@ -155,8 +242,8 @@ export default function usePost<TRes = any, TReq = any>(
       setLoading(false);
       return null;
     },
-    [data, endpoint]
+    [data, endpoint],
   );
 
-  return { loading, data, error, post, reset, abort, setData };
+  return { loading, data, error, status, message, post, reset, abort, setData };
 }

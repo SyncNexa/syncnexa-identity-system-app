@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "./style.module.css";
 import React from "react";
+import { APP_ROUTES } from "@/routes/paths";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +17,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <div className={styles.right_panel}>
         <div className={styles.topBar}>
           <h1>Sign Up</h1>
-          <Link href="/login" className={styles.loginLink}>
+          <Link href={APP_ROUTES.LOGIN} className={styles.loginLink}>
             Log In
           </Link>
         </div>

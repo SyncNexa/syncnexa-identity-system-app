@@ -10,6 +10,11 @@
   align-items: center;
   justify-content: center;
 }
+@media screen and (max-width: 900px) {
+  .layout .left_panel {
+    display: none;
+  }
+}
 .layout .left_panel h1 {
   background: linear-gradient(121deg, #fff 24.28%, #ffbafa 50.49%, #75ffda 75.72%);
   background-clip: text;
@@ -22,6 +27,11 @@
   padding: 48px;
   background: var(--panel-bg);
   position: relative;
+}
+@media screen and (max-width: 768px) {
+  .layout .right_panel {
+    padding: 1rem;
+  }
 }
 .layout .right_panel .topBar {
   display: flex;
@@ -50,6 +60,11 @@
   left: 0;
   width: 100%;
 }
+@media screen and (max-width: 768px) {
+  .layout .right_panel .copyright {
+    bottom: 0.5rem;
+  }
+}
 .layout .container {
   display: flex;
   gap: 24px;
@@ -59,19 +74,52 @@
   height: 100%;
   position: relative;
 }
+.layout .form .tabs {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+.layout .form .tabs button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0;
+  border-bottom: 0.15rem solid transparent;
+  cursor: pointer;
+}
+.layout .form .tabs button span:nth-child(1) {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-input);
+}
+.layout .form .tabs button.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.layout .form .tabs button.active span:nth-child(1) {
+  background: #bbffed;
+}
 .layout .form .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px 24px;
   margin-top: 24px;
 }
-.layout .form .submit {
-  margin-top: 28px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 16px;
-  border-radius: 12px;
+@media screen and (max-width: 600px) {
+  .layout .form .grid {
+    grid-template-columns: 1fr;
+  }
+}
+.layout .form .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
   width: 100%;
-  cursor: pointer;
 }/*# sourceMappingURL=style.module.css.map */

@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import React from "react";
 import styles from "@/layouts/navigation/sidebar/style/style.module.css";
 import { usePathname } from "next/navigation";
 import DashboardIcon from "@/assets/icons/Dashboard";
@@ -13,9 +12,14 @@ import DocumentIcon from "@/assets/icons/Document";
 import LinkIcon from "@/assets/icons/Link";
 import SecurityIcon from "@/assets/icons/Security";
 import Image from "next/image";
+import { useCustomNavigation } from "@/hooks/useCustomNavigation";
+import { useUser } from "@/contexts/UserContext";
+import { formatName } from "@/utils/formatters";
 
 function SideBar() {
+  const { user, loading, error, refetch } = useUser();
   const pathname = usePathname();
+  const { open, toggleOpen } = useCustomNavigation();
   const upTabs = [
     {
       label: "Overview",
@@ -125,41 +129,58 @@ function SideBar() {
     },
   ];
   return (
-    <nav className={styles.nav}>
-      <div className={styles.container}>
-        {upTabs.map((tab, i) => (
-          <Link
-            key={i}
-            href={tab.path}
-            className={pathname === tab.path ? styles.active : ""}
-          >
-            {tab.icon}
-            {tab.label}
-          </Link>
-        ))}
-      </div>
-      <div className={styles.container}>
-        {downTabs.map((tab, i) => (
-          <Link
-            key={i}
-            href={tab.path}
-            className={pathname === tab.path ? styles.active : ""}
-          >
-            {tab.icon}
-            {tab.label}
-          </Link>
-        ))}
-        <div className={styles.user_profile}>
-          <Image
-            src={"/next.svg"}
-            alt=""
-            width={50}
-            height={50}
-            quality={100}
-          />
-          <div>
-            <b>Osuagwu C.F</b>
-            <small>Student</small>
+    <nav
+      className={`${styles.nav} ${open ? styles.active : ""}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleOpen();
+      }}
+    >
+      <div className={styles.wrapper} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.container}>
+          {upTabs.map((tab, i) => (
+            <Link
+              key={i}
+              href={tab.path}
+              className={pathname === tab.path ? styles.active : ""}
+              onClick={toggleOpen}
+            >
+              {tab.icon}
+              {tab.label}
+            </Link>
+          ))}
+        </div>
+        <div className={styles.container}>
+          {downTabs.map((tab, i) => (
+            <Link
+              key={i}
+              href={tab.path}
+              className={pathname === tab.path ? styles.active : ""}
+              onClick={toggleOpen}
+            >
+              {tab.icon}
+              {tab.label}
+            </Link>
+          ))}
+          <div className={styles.user_profile}>
+            {user?.profileImage ? (
+              <Image
+                src={user.profileImage}
+                alt={user.fullName || "User"}
+                width={50}
+                height={50}
+                quality={100}
+                className={styles.profileImage}
+              />
+            ) : (
+              <div className={styles.avatarFallback}>
+                {formatName(user?.fullName ?? "", { initials: "full" })}
+              </div>
+            )}
+            <div>
+              <b>{formatName(user?.fullName ?? "")}</b>
+              <small>{user?.role || "Guest"}</small>
+            </div>
           </div>
         </div>
       </div>

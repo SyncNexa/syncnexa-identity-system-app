@@ -95,6 +95,7 @@ export default function VerificationProgress({
         label="Continue Verification"
         variant="primary"
         buttonStyles={{ height: 50, width: "100%" }}
+        color="green"
       />
     </div>
   );

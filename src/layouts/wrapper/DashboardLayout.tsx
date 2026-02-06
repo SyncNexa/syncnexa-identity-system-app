@@ -6,11 +6,13 @@ function DashboardLayout({
   children,
   breadcrumb,
   rightNode,
+  sub,
 }: {
   pageTitle: string;
   rightNode?: React.ReactNode;
   breadcrumb?: string;
   children: React.ReactNode;
+  sub?: string;
 }) {
   return (
     <section className={styles.dashbaord_layout}>
@@ -18,7 +20,14 @@ function DashboardLayout({
         <h1>{pageTitle}</h1>
         {rightNode}
       </div>
-      {breadcrumb ? <div></div> : null}
+      {breadcrumb || sub ? (
+        <div>
+          {sub ? <span className={styles.sub}>{sub}</span> : null}
+          {breadcrumb ? (
+            <span className={styles.breadcrumb}>{breadcrumb}</span>
+          ) : null}
+        </div>
+      ) : null}
 
       {children}
     </section>

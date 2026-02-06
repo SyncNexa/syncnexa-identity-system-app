@@ -14,4 +14,48 @@ interface SyncInput extends React.InputHTMLAttributes<HTMLInputElement> {
     message: string;
     type: "info" | "warning" | "error";
   };
+  otpStyles?: {
+    inputStyles?: React.CSSProperties;
+    containerStyles?: React.CSSProperties;
+    wrapperStyles?: React.CSSProperties;
+  };
+}
+
+interface DocumentSelector {
+  formats: FileFormat[];
+  onSelect: (file: File) => void;
+  buffering?: () => void;
+  label?: string;
+}
+
+type FileFormat = "pdf" | "png" | "jpeg" | "jpg" | "docx" | "txt";
+
+interface SyncSelectOption {
+  label: string;
+  value: string;
+  description?: string;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+}
+
+interface SyncSelectProps {
+  label?: string;
+  placeholder?: string;
+  required?: boolean;
+  options: SyncSelectOption[];
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
+  invalid?: boolean;
+  warning?: boolean;
+  className?: string;
+  name?: string;
+  leftNode?: React.ReactNode;
+  rightNode?: React.ReactNode;
+  info?: {
+    message: string;
+    type: "info" | "warning" | "error";
+  };
 }

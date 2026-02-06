@@ -26,6 +26,7 @@
   --color-unread: #edfffa;
   --color-light-info: #eefffa;
   --color-hover: #f5f5f5;
+  --color-light: #f5f5f5;
 }
 
 [data-theme="dark"] {
@@ -42,5 +43,7 @@
   --card-color: #282828;
   --card-stroke-color: #323232;
   --color-unread: #212c29;
+  --color-hover: #4d4d4d;
   --color-light-info: #012c1e;
+  --color-light: #2d2d2d;
 }

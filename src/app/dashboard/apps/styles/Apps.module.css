@@ -1,0 +1,89 @@
+.apps {
+  position: relative;
+  margin: 2rem 0;
+}
+
+.action_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.action_button:hover {
+  background-color: var(--color-hover, #f0f0f0);
+}
+
+.app_name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.app_name img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 0.2rem solid var(--color-primary, #04d69d);
+  display: block;
+}
+
+.details {
+  position: relative;
+}
+.details .header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 1rem 0;
+}
+.details .section {
+  margin: 1rem 0;
+}
+.details .section_header {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.details .section_header span {
+  display: block;
+  color: var(--color-text);
+}
+.details .section_title {
+  color: var(--color-title);
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.details .section .content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.details .section .content .row {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-bottom: 0.1rem solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.details .section .content .row span:nth-child(odd) {
+  color: var(--color-text);
+}
+
+.revoke {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.revoke .btns {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}/*# sourceMappingURL=Apps.module.css.map */

@@ -1,0 +1,13 @@
+.personal_info {
+  position: relative;
+}
+.personal_info .inner {
+  margin-bottom: 1rem;
+}
+
+.academic_info {
+  position: relative;
+}
+.academic_info .big {
+  margin-bottom: 1rem;
+}/*# sourceMappingURL=Components.module.css.map */

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
+import ToastProvider from "./Toast/ToastProvider";
 
 type ThemeName = "light" | "dark";
 
@@ -34,7 +35,7 @@ export default function ThemeProvider({
 
   return (
     <div data-theme-provider>
-      {children}
+      <ToastProvider>{children}</ToastProvider>
       {/* Expose a minimal toggle button for manual testing */}
       <button
         aria-label="Toggle theme"

@@ -1,14 +1,30 @@
 /**
  * Server-side helper to proxy requests to an upstream API server.
- * Uses `process.env.API_SERVER_BASE_URL` as the upstream base URL.
+ * Uses `process.env.API_BASE_URL` as the upstream base URL.
+ * All endpoints are prefixed with /api/v1 unless explicitly skipped.
+ * Automatically includes the access token from cookies in the Authorization header.
  */
 import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
-export async function proxyToApi(req: Request | NextRequest, path: string) {
-  const base = process.env.API_SERVER_BASE_URL || "";
-  const target = `${base.replace(/\/$/, "")}${
-    path.startsWith("/") ? path : `/${path}`
-  }`;
+type ProxyOptions = {
+  skipVersionPrefix?: boolean;
+  skipAuth?: boolean; // Skip adding Authorization header
+};
+
+export async function proxyToApi(
+  req: Request | NextRequest,
+  path: string,
+  options?: ProxyOptions,
+) {
+  const base = process.env.API_BASE_URL || "";
+  // Ensure path starts with /
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const shouldSkip = options?.skipVersionPrefix === true;
+  // Construct target with optional /api/v1 prefix
+  const target = shouldSkip
+    ? `${base.replace(/\/$/, "")}${normalizedPath}`
+    : `${base.replace(/\/$/, "")}/api/v1${normalizedPath}`;
 
   // Clone headers from incoming request, but avoid overwriting host
   const headers = new Headers();
@@ -20,6 +36,19 @@ export async function proxyToApi(req: Request | NextRequest, path: string) {
     }
   } catch (e) {
     // ignore header copying issues
+  }
+
+  // Add Authorization header with access token from cookies
+  if (!options?.skipAuth) {
+    try {
+      const cookieStore = await cookies();
+      const accessToken = cookieStore.get("syncnexa_access_token")?.value;
+      if (accessToken) {
+        headers.set("Authorization", `Bearer ${accessToken}`);
+      }
+    } catch (e) {
+      // ignore if cookies are not available
+    }
   }
 
   // Preserve body if present
@@ -44,16 +73,24 @@ export async function proxyToApi(req: Request | NextRequest, path: string) {
       headers,
       body,
       // keep same credentials behavior; Next.js server fetch uses same-origin by default
-    }
+    },
   );
 
   // Build a response copying status, headers and body
   const responseHeaders = new Headers();
   res.headers.forEach((value, key) => {
-    responseHeaders.set(key, value);
+    // Skip content encoding headers as we're passing the body as-is
+    if (
+      key.toLowerCase() !== "content-encoding" &&
+      key.toLowerCase() !== "content-length"
+    ) {
+      responseHeaders.set(key, value);
+    }
   });
-  const arrayBuffer = await res.arrayBuffer();
-  return new Response(arrayBuffer, {
+
+  // Get the body - fetch already decompresses gzip/brotli/deflate automatically
+  const responseBody = await res.text();
+  return new Response(responseBody, {
     status: res.status,
     headers: responseHeaders,
   });

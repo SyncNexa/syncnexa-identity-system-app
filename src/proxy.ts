@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { APP_ROUTES } from "./routes/paths";
+
+const ACCESS_TOKEN_KEY = "syncnexa_access_token";
 
 /**
  * Proxy-style middleware replacement file.
- * Kept the same behavior as the previous `middleware.ts` but named `proxy.ts` per project update.
- * It redirects unauthenticated page requests (missing `token` cookie) to `/login`.
+ * Handles authentication guard for dashboard routes.
+ * Redirects unauthenticated users to login page.
  */
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -30,18 +33,21 @@ export function proxy(req: NextRequest) {
     "/",
     "/about",
     "/signup/verify",
-    "/dashboard",
-    "/dashboard/*",
-    "/overview",
+    "/session-expired",
   ];
   if (publicPaths.includes(pathname)) return NextResponse.next();
 
-  // Check for an auth cookie (named `token` here). Adjust as needed.
-  const token = req.cookies.get("token")?.value;
-  if (!token) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  // AuthGuard: Check authentication for dashboard routes
+  if (pathname.startsWith("/dashboard")) {
+    const accessToken = req.cookies.get(ACCESS_TOKEN_KEY)?.value;
+
+    if (!accessToken) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      // Add redirect parameter to return user to the page they were trying to access
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   return NextResponse.next();

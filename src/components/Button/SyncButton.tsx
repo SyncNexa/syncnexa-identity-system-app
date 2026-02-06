@@ -18,10 +18,10 @@ const SyncButton = React.forwardRef<HTMLButtonElement, SyncButton>(
     const classNames = [
       Styles.button,
       Styles[variant],
-      Styles[color],
       loading ? Styles.loading : "",
       disabled ? Styles.disabled : "",
       className || "",
+      Styles[color],
     ]
       .filter(Boolean)
       .join(" ");
@@ -39,12 +39,12 @@ const SyncButton = React.forwardRef<HTMLButtonElement, SyncButton>(
         {loading ? (
           <span className={Styles.loader} aria-hidden="true" />
         ) : (
-          children ?? <span>{label}</span>
+          (children ?? <span>{label}</span>)
         )}
         {/* {loading && <span className={Styles.srOnly}>Loading</span>} */}
       </button>
     );
-  }
+  },
 );
 
 SyncButton.displayName = "SyncButton";

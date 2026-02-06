@@ -1,148 +1,792 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useRouter } from "next/navigation";
 import SyncInput from "@/components/Input/SyncInput";
 import SyncButton from "@/components/Button/SyncButton";
-import { areKeysEmpty } from "@/utils/sanitizers";
+import { areFieldsFilled } from "@/utils/sanitizers";
+import { SyncSelect } from "@/components/Input";
+import usePost from "@/hooks/usePost";
+import useFetch from "@/hooks/useFetch";
+import { APP_ROUTES, API_ROUTES } from "@/routes/paths";
+import { useToast } from "@/hooks/useToast";
+import {
+  validateFirstName,
+  validateLastName,
+  validateEmail,
+  validatePhone,
+  validatePassword,
+  validateConfirmPassword,
+  validateState,
+  validateAddress,
+  validateMatricNo,
+} from "@/utils/validators";
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const { post, loading, error, status, message } = usePost<SignupData>(
+    API_ROUTES.SIGNUP,
+  );
+  const {
+    data: schools,
+    loading: schoolsLoading,
+    error: schoolsError,
+    message: schoolsMessage,
+  } = useFetch<SchoolList>(API_ROUTES.UNIVERSITIES);
+
+  const [activeTab, setActiveTab] = useState<"basicInfo" | "academicInfo">(
+    "basicInfo",
+  );
+
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    state: "",
-    address: "",
+    basicInfo: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      state: "",
+      address: "",
+      gender: "",
+      country: "",
+      role: "student", // Default role
+    },
+    academicInfo: {
+      institution: "",
+      matricNo: "",
+      program: "",
+      department: "",
+      level: "",
+      faculty: "",
+      admissionYear: "",
+      expectedGraduationYear: "",
+    },
   });
+
+  // Validation state
+  const [validations, setValidations] = useState<{
+    [key: string]: ValidationResult;
+  }>({});
+
+  // Track which fields have been touched (blurred at least once)
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+
+  // Fetch faculties based on selected institution
+  const {
+    data: faculties,
+    loading: facultiesLoading,
+    error: facultiesError,
+  } = useFetch<FacultyList>(
+    form.academicInfo.institution
+      ? API_ROUTES.INSTITUTION_FACULTIES(form.academicInfo.institution)
+      : "",
+  );
+
+  const {
+    data: programs,
+    loading: programLoading,
+    error: programError,
+  } = useFetch<ProgramList>(
+    form.academicInfo.institution
+      ? API_ROUTES.INSTITUTION_PROGRAMS(form.academicInfo.institution)
+      : "",
+  );
+
+  // // Track which fields have been touched (blurred at least once)
+  // const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+
+  // Validate a specific field
+  const validateField = (name: string, value: string) => {
+    let result: ValidationResult = { isValid: true };
+
+    switch (name) {
+      case "firstName":
+        result = validateFirstName(value);
+        break;
+      case "lastName":
+        result = validateLastName(value);
+        break;
+      case "email":
+        result = validateEmail(value);
+        break;
+      case "phone":
+        result = validatePhone(value);
+        break;
+      case "password":
+        result = validatePassword(value);
+        // Also revalidate confirmPassword if it exists
+        if (form.basicInfo.confirmPassword) {
+          setValidations((prev) => ({
+            ...prev,
+            confirmPassword: validateConfirmPassword(
+              value,
+              form.basicInfo.confirmPassword,
+            ),
+          }));
+        }
+        break;
+      case "confirmPassword":
+        result = validateConfirmPassword(form.basicInfo.password, value);
+        break;
+      case "state":
+        result = validateState(value);
+        break;
+      case "address":
+        result = validateAddress(value);
+        break;
+      case "matricNo":
+        result = validateMatricNo(value);
+        break;
+      default:
+        result = { isValid: true };
+    }
+
+    setValidations((prev) => ({ ...prev, [name]: result }));
+    return result;
+  };
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    if (name === "phone") {
-      if (value.length > 10) {
+
+    // Update form state
+    setForm((f) => {
+      if (name in f.basicInfo) {
+        return {
+          ...f,
+          basicInfo: { ...f.basicInfo, [name]: value },
+        };
+      } else if (name in f.academicInfo) {
+        return {
+          ...f,
+          academicInfo: { ...f.academicInfo, [name]: value },
+        };
       }
+      return f;
+    });
+
+    // Live validation - only show errors/warnings after field has been touched
+    if (touched[name]) {
+      validateField(name, value);
     }
-    setForm((f) => ({ ...f, [name]: value }));
   }
 
-  const router = useRouter();
+  // Handle blur - mark field as touched and validate
+  const handleBlur = (name: string, value: string) => {
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    validateField(name, value);
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    // Create the signup payload matching SignupData interface
+    const signupPayload: SignupData = {
+      firstName: form.basicInfo.firstName,
+      lastName: form.basicInfo.lastName,
+      email: form.basicInfo.email,
+      password: form.basicInfo.password,
+      phone: form.basicInfo.phone,
+      role: form.basicInfo.role,
+      country: form.basicInfo.country,
+      state: form.basicInfo.state,
+      address: form.basicInfo.address,
+      gender: form.basicInfo.gender,
+      academic_info: {
+        institution: form.academicInfo.institution,
+        matric_number: form.academicInfo.matricNo,
+        program: form.academicInfo.program,
+        department: form.academicInfo.department,
+        faculty: form.academicInfo.faculty,
+        admission_year: parseInt(form.academicInfo.admissionYear, 10),
+        student_level: form.academicInfo.level,
+        graduation_year: form.academicInfo.expectedGraduationYear
+          ? parseInt(form.academicInfo.expectedGraduationYear, 10)
+          : undefined,
+      },
+    };
+
+    const result = await post(signupPayload);
+
+    if (result) {
+      // Navigate to verification page
+      // OTP is sent to email immediately by the API
+      const emailParam = encodeURIComponent(form.basicInfo.email);
+      router.push(`${APP_ROUTES.SIGNUP_VERIFY}?email=${emailParam}`);
+    } else if (!result && error) {
+      showToast({
+        message: error.message || "Signup failed. Please try again.",
+        type: "error",
+        title: "Signup Error",
+      });
+    }
+  };
+
+  const schoolOptions =
+    schools?.items?.map((school) => ({
+      label: school.label,
+      value: school.code,
+    })) ?? [];
+
+  const programOptions =
+    programs?.programs?.map((program) => ({
+      label: program.toUpperCase(),
+      value: program,
+    })) ?? [];
+
+  const facultyOptions =
+    faculties?.faculties?.map((faculty) => ({
+      label: faculty.name,
+      value: faculty.code,
+    })) ?? [];
+
+  const selectedFaculty = faculties?.faculties?.find(
+    (faculty) => faculty.code === form.academicInfo.faculty,
+  );
+
+  const departmentOptions =
+    selectedFaculty?.departments?.map((dept) => ({
+      label: dept,
+      value: dept,
+    })) ?? [];
+
+  // Generate admission year options (last 7 years to current year - 1)
+  const currentYear = new Date().getFullYear();
+  const admissionYearOptions = Array.from({ length: 7 }, (_, i) => {
+    const year = currentYear - 1 - i;
+    return {
+      label: year.toString(),
+      value: year.toString(),
+    };
+  }).reverse();
+
+  // Generate level options (100 to 700)
+  const levelOptions = Array.from({ length: 7 }, (_, i) => {
+    const level = (i + 1) * 100;
+    return {
+      label: `${level} Level`,
+      value: level.toString(),
+    };
+  });
+
+  // Generate graduation year options based on selected admission year
+  const graduationYearOptions = form.academicInfo.admissionYear
+    ? Array.from({ length: 7 }, (_, i) => {
+        const year = parseInt(form.academicInfo.admissionYear, 10) + 1 + i;
+        return {
+          label: year.toString(),
+          value: year.toString(),
+        };
+      })
+    : [];
+
+  // Check if the selected graduation year has already passed
+  const hasGraduated =
+    form.academicInfo.expectedGraduationYear &&
+    parseInt(form.academicInfo.expectedGraduationYear, 10) < currentYear;
+
+  useEffect(() => {
+    console.log(form);
+  }, [form]);
 
   return (
     <div className={styles.form}>
-      <div className={styles.grid}>
-        <div>
-          <SyncInput
-            label="First Name"
-            required
-            name="firstName"
-            value={form.firstName}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g John"
-            inputType="text"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="Last Name"
-            required
-            name="lastName"
-            value={form.lastName}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g Doe"
-            inputType="text"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="Email"
-            required
-            name="email"
-            value={form.email}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g john.doe@example.com"
-            inputType="email"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="Phone (Optional)"
-            name="phone"
-            value={form.phone}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g 1234 5678 90"
-            inputType="phone"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="Password"
-            required
-            name="password"
-            value={form.password}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g JohN112*#"
-            inputType="password"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="Confirm Password"
-            required
-            name="confirmPassword"
-            value={form.confirmPassword}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g JohN112*#"
-            inputType="password"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="State/Province"
-            required
-            name="state"
-            value={form.state}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g Owerri"
-            inputType="text"
-          />
-        </div>
-
-        <div>
-          <SyncInput
-            label="Home Address"
-            required
-            name="address"
-            value={form.address}
-            onChange={onChange}
-            className={styles.SyncInput}
-            placeholder="e.g Abc Ave. 1100 State County"
-            inputType="text"
-          />
-        </div>
+      <div className={styles.tabs}>
+        {[
+          {
+            title: "Basic Information",
+            key: "basicInfo",
+          },
+          {
+            title: "Academic Information",
+            key: "academicInfo",
+          },
+        ].map((tab, i) => (
+          <button
+            key={i}
+            className={activeTab === tab.key ? styles.active : ""}
+            onClick={() =>
+              activeTab === "basicInfo"
+                ? areFieldsFilled({ ...form.basicInfo })
+                  ? setActiveTab(tab.key as "basicInfo" | "academicInfo")
+                  : null
+                : setActiveTab(tab.key as "basicInfo" | "academicInfo")
+            }
+          >
+            <span>{i + 1}</span>
+            <span>{tab.title}</span>
+          </button>
+        ))}
       </div>
+      {activeTab === "basicInfo" ? (
+        <div className={styles.grid}>
+          <div>
+            <SyncInput
+              label="First Name"
+              required
+              name="firstName"
+              value={form.basicInfo.firstName}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("firstName", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g John"
+              inputType="text"
+              invalid={
+                touched.firstName && validations.firstName?.type === "error"
+              }
+              warning={
+                touched.firstName && validations.firstName?.type === "warning"
+              }
+              info={
+                touched.firstName && validations.firstName?.message
+                  ? {
+                      message: validations.firstName.message,
+                      type: validations.firstName.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
 
-      <SyncButton
-        className={styles.submit}
-        onClick={() => router.push("/signup/verify")}
-        disabled={!areKeysEmpty(form, ["phone"])}
-      >
-        Continue
-      </SyncButton>
+          <div>
+            <SyncInput
+              label="Last Name"
+              required
+              name="lastName"
+              value={form.basicInfo.lastName}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("lastName", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g Doe"
+              inputType="text"
+              invalid={
+                touched.lastName && validations.lastName?.type === "error"
+              }
+              warning={
+                touched.lastName && validations.lastName?.type === "warning"
+              }
+              info={
+                touched.lastName && validations.lastName?.message
+                  ? {
+                      message: validations.lastName.message,
+                      type: validations.lastName.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="Email"
+              required
+              name="email"
+              value={form.basicInfo.email}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("email", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g john.doe@example.com"
+              inputType="email"
+              invalid={touched.email && validations.email?.type === "error"}
+              warning={touched.email && validations.email?.type === "warning"}
+              info={
+                touched.email && validations.email?.message
+                  ? {
+                      message: validations.email.message,
+                      type: validations.email.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="Phone"
+              required
+              name="phone"
+              value={form.basicInfo.phone}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("phone", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g 1234 5678 90"
+              inputType="phone"
+              invalid={touched.phone && validations.phone?.type === "error"}
+              warning={touched.phone && validations.phone?.type === "warning"}
+              info={
+                touched.phone && validations.phone?.message
+                  ? {
+                      message: validations.phone.message,
+                      type: validations.phone.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="Password"
+              required
+              name="password"
+              value={form.basicInfo.password}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("password", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g JohN112*#"
+              inputType="password"
+              invalid={
+                touched.password && validations.password?.type === "error"
+              }
+              warning={
+                touched.password && validations.password?.type === "warning"
+              }
+              info={
+                touched.password && validations.password?.message
+                  ? {
+                      message: validations.password.message,
+                      type: validations.password.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="Confirm Password"
+              required
+              name="confirmPassword"
+              value={form.basicInfo.confirmPassword}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("confirmPassword", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g JohN112*#"
+              inputType="password"
+              invalid={
+                touched.confirmPassword &&
+                validations.confirmPassword?.type === "error"
+              }
+              warning={
+                touched.confirmPassword &&
+                validations.confirmPassword?.type === "warning"
+              }
+              info={
+                touched.confirmPassword && validations.confirmPassword?.message
+                  ? {
+                      message: validations.confirmPassword.message,
+                      type: validations.confirmPassword.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={[
+                { label: "Male", value: "male" },
+                { label: "Female", value: "female" },
+                { label: "Other", value: "other" },
+              ]}
+              label="Gender"
+              placeholder="Select gender"
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  basicInfo: { ...f.basicInfo, gender: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="Country"
+              name="country"
+              value={form.basicInfo.country}
+              onChange={onChange}
+              className={styles.SyncInput}
+              placeholder="e.g Nigeria"
+              inputType="text"
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="State/Province"
+              required
+              name="state"
+              value={form.basicInfo.state}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("state", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g Owerri"
+              inputType="text"
+              invalid={touched.state && validations.state?.type === "error"}
+              warning={touched.state && validations.state?.type === "warning"}
+              info={
+                touched.state && validations.state?.message
+                  ? {
+                      message: validations.state.message,
+                      type: validations.state.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncInput
+              label="Home Address"
+              required
+              name="address"
+              value={form.basicInfo.address}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("address", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g Abc Ave. 1100 State County"
+              inputType="text"
+              invalid={touched.address && validations.address?.type === "error"}
+              warning={
+                touched.address && validations.address?.type === "warning"
+              }
+              info={
+                touched.address && validations.address?.message
+                  ? {
+                      message: validations.address.message,
+                      type: validations.address.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+      ) : (
+        <div className={styles.grid}>
+          <div>
+            <SyncInput
+              label="Matric Number"
+              required
+              name="matricNo"
+              value={form.academicInfo.matricNo}
+              onChange={onChange}
+              onBlur={(e) => handleBlur("matricNo", e.target.value)}
+              className={styles.SyncInput}
+              placeholder="e.g 202600010023"
+              inputType="text"
+              invalid={
+                touched.matricNo && validations.matricNo?.type === "error"
+              }
+              warning={
+                touched.matricNo && validations.matricNo?.type === "warning"
+              }
+              info={
+                touched.matricNo && validations.matricNo?.message
+                  ? {
+                      message: validations.matricNo.message,
+                      type: validations.matricNo.type || "info",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={schoolOptions}
+              label="Institution"
+              required
+              placeholder={
+                schoolsLoading
+                  ? "Loading institutions..."
+                  : "e.g Federal University of Technology Ow..."
+              }
+              disabled={schoolsLoading}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, institution: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={programOptions}
+              label="Program"
+              required
+              placeholder={
+                programLoading
+                  ? "Loading programs..."
+                  : !form.academicInfo.institution
+                    ? "Select institution first"
+                    : "e.g B. Tech"
+              }
+              disabled={programLoading || !form.academicInfo.institution}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, program: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={departmentOptions}
+              label="Department"
+              required
+              placeholder={
+                !form.academicInfo.faculty
+                  ? "Select a faculty first"
+                  : "e.g Information Technology"
+              }
+              disabled={!form.academicInfo.faculty}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, department: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={facultyOptions}
+              label="Faculty"
+              required
+              placeholder={
+                facultiesLoading
+                  ? "Loading faculties..."
+                  : !form.academicInfo.institution
+                    ? "Select institution first"
+                    : "e.g School of Information and Comm..."
+              }
+              disabled={facultiesLoading || !form.academicInfo.institution}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, faculty: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={levelOptions}
+              label="Level"
+              required
+              placeholder="e.g 100"
+              value={form.academicInfo.level}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, level: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={admissionYearOptions}
+              label="Admission Year"
+              required
+              placeholder="e.g 2020"
+              value={form.academicInfo.admissionYear}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, admissionYear: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={graduationYearOptions}
+              label="Expected Graduation Year"
+              placeholder={
+                !form.academicInfo.admissionYear
+                  ? "Select admission year first"
+                  : "e.g 2024"
+              }
+              disabled={!form.academicInfo.admissionYear}
+              value={form.academicInfo.expectedGraduationYear}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: {
+                    ...f.academicInfo,
+                    expectedGraduationYear: val,
+                  },
+                }))
+              }
+              warning={hasGraduated ? true : undefined}
+              info={
+                hasGraduated
+                  ? {
+                      message:
+                        "It seems you've already graduated. Please contact support if this is incorrect.",
+                      type: "warning",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+      )}
+
+      <div className={styles.actions}>
+        {activeTab === "basicInfo" ? (
+          <span></span>
+        ) : (
+          <SyncButton
+            variant="outline"
+            onClick={() => setActiveTab("basicInfo")}
+          >
+            Prev
+          </SyncButton>
+        )}
+
+        <SyncButton
+          variant="outline"
+          onClick={() => {
+            if (activeTab === "basicInfo") {
+              setActiveTab("academicInfo");
+            } else {
+              handleSubmit();
+            }
+          }}
+          disabled={
+            activeTab === "basicInfo"
+              ? !areFieldsFilled({ ...form.basicInfo }, [
+                  "confirmPassword",
+                  "gender",
+                  "country",
+                ])
+              : !areFieldsFilled({ ...form.basicInfo, ...form.academicInfo }, [
+                  "expectedGraduationYear",
+                  "confirmPassword",
+                  "gender",
+                  "country",
+                ]) || form.basicInfo.password !== form.basicInfo.confirmPassword
+          }
+          loading={loading}
+        >
+          {activeTab === "basicInfo"
+            ? "Next"
+            : loading
+              ? "Creating Account..."
+              : "Submit"}
+        </SyncButton>
+      </div>
     </div>
   );
 }

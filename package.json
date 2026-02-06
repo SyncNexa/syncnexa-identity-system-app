@@ -10,17 +10,22 @@
   },
   "dependencies": {
     "libphonenumber-js": "^1.12.26",
+<<<<<<< HEAD
     "next": "^16.1.6",
+=======
+    "next": "16.0.10",
+>>>>>>> 906ebd59380d9a06541bd4028e7b7d8558d8fe8b
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "baseline-browser-mapping": "^2.9.14",
     "eslint": "^9",
-    "eslint-config-next": "16.0.2",
+    "eslint-config-next": "16.1.1",
     "typescript": "^5"
   }
 }

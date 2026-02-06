@@ -1,0 +1,17 @@
+.format_status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+.format_status .VERIFIED {
+  color: #04d69d;
+}
+.format_status .PENDING {
+  color: #ffbc2c;
+}
+.format_status .NOT_UPLOADED,
+.format_status .NOT_VERIFIED,
+.format_status .FAILED {
+  color: #d60404;
+}/*# sourceMappingURL=Status.module.css.map */

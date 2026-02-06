@@ -5,6 +5,9 @@
   color: var(--color-title);
   font-weight: 600;
 }
+.dashbaord_layout .sub {
+  color: #707070;
+}
 
 .section {
   position: relative;
