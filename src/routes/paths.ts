@@ -51,7 +51,7 @@ export const BACKEND_API_ENDPOINTS = {
   VERIFY_EMAIL_RESEND: "/auth/verify-email/resend",
   UNIVERSITIES: "/universities",
   INSTITUTION_FACULTIES: (code: string) => `/institutions/${code}/faculties`,
-  INSTITUTION_PROGRAMS: (code: string) => `/institutions/${code}/programs`,
+  INSTITUTION_PROGRAMS: (code: string) => `/institutions/${code}/degrees`,
   USER_VERIFICATION_CENTER: "/user/verification-center",
   USER_SECURITY: "/security",
   USER_ME: "/user/me",
