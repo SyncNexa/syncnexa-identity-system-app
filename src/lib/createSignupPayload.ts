@@ -20,7 +20,7 @@ export function createSignupPayload(
   academicInfo: {
     institution: string;
     matricNo: string;
-    program: string;
+    degree: string;
     department: string;
     level: string;
     faculty: string;
@@ -53,7 +53,7 @@ export function createSignupPayload(
     academic_info: {
       institution: academicInfo.institution,
       matric_number: academicInfo.matricNo,
-      program: academicInfo.program,
+      degree: academicInfo.degree,
       department: academicInfo.department,
       faculty: academicInfo.faculty,
       admission_year: parseInt(academicInfo.admissionYear, 10),

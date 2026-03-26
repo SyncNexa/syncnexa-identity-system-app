@@ -58,4 +58,5 @@ interface SyncSelectProps {
     message: string;
     type: "info" | "warning" | "error";
   };
+  searchable?: boolean;
 }

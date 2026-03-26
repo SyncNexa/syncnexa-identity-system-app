@@ -30,5 +30,5 @@ interface Faculty {
 interface ProgramList {
   institutionCode: string;
   count: number;
-  programs: string[];
+  degrees: string[];
 }
