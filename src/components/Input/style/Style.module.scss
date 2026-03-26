@@ -243,6 +243,29 @@
       cursor: not-allowed;
     }
 
+    .selectSearchWrap {
+      position: sticky;
+      top: -0.35rem;
+      z-index: 1;
+      padding: 0.35rem 0.55rem;
+      background: inherit;
+      border-bottom: 0.1rem solid rgba(0, 0, 0, 0.05);
+    }
+    .selectSearch {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border: 0.1rem solid var(--color-border);
+      border-radius: 0.35rem;
+      background: var(--color-input);
+      color: var(--color-title);
+      font-size: 0.92rem;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+      }
+    }
+
     .selectTrigger {
       display: flex;
       align-items: center;
@@ -264,11 +287,15 @@
     .selectValue {
       flex: 1 1 auto;
       min-width: 0;
+      width: 100%;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
       color: var(--color-title);
       font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       &.placeholder {
         color: var(--color-placeholder);

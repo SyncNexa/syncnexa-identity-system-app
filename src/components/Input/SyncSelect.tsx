@@ -29,6 +29,7 @@ type SyncSelectProps = {
     message: string;
     type: "info" | "warning" | "error";
   };
+  searchable?: boolean;
 };
 
 function SyncSelect({
@@ -48,13 +49,16 @@ function SyncSelect({
   leftNode,
   rightNode,
   info,
+  searchable = false,
 }: SyncSelectProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const generatedName = useRef(
     name || `syncselect-${Math.random().toString(36).slice(2, 9)}`,
   );
   const isControlled = useMemo(() => value !== undefined, [value]);
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [internalValue, setInternalValue] = useState<string>(
     value ?? defaultValue ?? "",
   );
@@ -91,8 +95,33 @@ function SyncSelect({
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) {
+      setSearchQuery("");
+      return;
+    }
+
+    if (searchable && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [open, searchable]);
+
   const selectedValue = isControlled ? (value ?? "") : internalValue;
   const selectedOption = options.find((opt) => opt.value === selectedValue);
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable) return options;
+
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    if (!normalizedQuery) return options;
+
+    return options.filter((opt) => {
+      const haystack = `${opt.label} ${opt.description ?? ""} ${opt.value}`
+        .toLowerCase()
+        .trim();
+      return haystack.includes(normalizedQuery);
+    });
+  }, [options, searchable, searchQuery]);
 
   const handleSelect = (opt: SelectOption) => {
     if (opt.disabled || disabled) return;
@@ -101,6 +130,7 @@ function SyncSelect({
     }
     onValueChange?.(opt.value);
     onChange?.(opt.value);
+    setSearchQuery("");
     setOpen(false);
   };
 
@@ -157,9 +187,27 @@ function SyncSelect({
           </span>
         </button>
 
-        {open && options.length > 0 && (
+        {open && (
           <div className={Styles.selectMenu} role="listbox">
-            {options.map((opt) => (
+            {searchable && (
+              <div className={Styles.selectSearchWrap}>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className={Styles.selectSearch}
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search options"
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                      setOpen(false);
+                    }
+                  }}
+                />
+              </div>
+            )}
+
+            {filteredOptions.map((opt) => (
               <div
                 key={opt.value}
                 role="option"
@@ -182,6 +230,10 @@ function SyncSelect({
                 )}
               </div>
             ))}
+
+            {filteredOptions.length === 0 && (
+              <div className={Styles.selectEmpty}>No options found</div>
+            )}
           </div>
         )}
       </div>

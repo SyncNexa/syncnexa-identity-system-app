@@ -56,7 +56,7 @@ export default function SignupPage() {
     academicInfo: {
       institution: "",
       matricNo: "",
-      program: "",
+      degree: "",
       department: "",
       level: "",
       faculty: "",
@@ -195,7 +195,7 @@ export default function SignupPage() {
       academic_info: {
         institution: form.academicInfo.institution,
         matric_number: form.academicInfo.matricNo,
-        program: form.academicInfo.program,
+        degree: form.academicInfo.degree,
         department: form.academicInfo.department,
         faculty: form.academicInfo.faculty,
         admission_year: parseInt(form.academicInfo.admissionYear, 10),
@@ -229,9 +229,9 @@ export default function SignupPage() {
     })) ?? [];
 
   const programOptions =
-    programs?.programs?.map((program) => ({
-      label: program.toUpperCase(),
-      value: program,
+    programs?.degrees?.map((degree) => ({
+      label: degree.toUpperCase(),
+      value: degree,
     })) ?? [];
 
   const facultyOptions =
@@ -609,6 +609,7 @@ export default function SignupPage() {
                   academicInfo: { ...f.academicInfo, institution: val },
                 }))
               }
+              searchable
             />
           </div>
 
@@ -628,27 +629,7 @@ export default function SignupPage() {
               onChange={(val) =>
                 setForm((f) => ({
                   ...f,
-                  academicInfo: { ...f.academicInfo, program: val },
-                }))
-              }
-            />
-          </div>
-
-          <div>
-            <SyncSelect
-              options={departmentOptions}
-              label="Department"
-              required
-              placeholder={
-                !form.academicInfo.faculty
-                  ? "Select a faculty first"
-                  : "e.g Information Technology"
-              }
-              disabled={!form.academicInfo.faculty}
-              onChange={(val) =>
-                setForm((f) => ({
-                  ...f,
-                  academicInfo: { ...f.academicInfo, department: val },
+                  academicInfo: { ...f.academicInfo, degree: val },
                 }))
               }
             />
@@ -671,6 +652,26 @@ export default function SignupPage() {
                 setForm((f) => ({
                   ...f,
                   academicInfo: { ...f.academicInfo, faculty: val },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <SyncSelect
+              options={departmentOptions}
+              label="Department"
+              required
+              placeholder={
+                !form.academicInfo.faculty
+                  ? "Select a faculty first"
+                  : "e.g Information Technology"
+              }
+              disabled={!form.academicInfo.faculty}
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  academicInfo: { ...f.academicInfo, department: val },
                 }))
               }
             />

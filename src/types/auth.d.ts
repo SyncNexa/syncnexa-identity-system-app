@@ -15,7 +15,7 @@ interface SignupData {
 interface AcademicInfo {
   institution: string;
   matric_number: string;
-  program: string;
+  degree: string;
   department: string;
   faculty: string;
   admission_year: number;
