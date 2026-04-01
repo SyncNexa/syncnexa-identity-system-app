@@ -33,7 +33,7 @@ function LoginForm() {
   // Track which fields have been touched (blurred at least once)
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
-  // Validate a specific field
+  //i  want Validate a specific field
   const validateField = (name: string, value: string) => {
     let result: ValidationResult = { isValid: true };
 
@@ -117,7 +117,7 @@ function LoginForm() {
             onChange={onChange}
             onBlur={(e) => handleBlur("email", e.target.value)}
             className={styles.SyncInput}
-            placeholder="e.g john.doe@example.com"
+            placeholder="e.g john.dooe@example.com"
             inputType="email"
             invalid={touched.email && validations.email?.type === "error"}
             warning={touched.email && validations.email?.type === "warning"}

@@ -10,7 +10,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         <div>
           <h1>
             Linking Minds <br />
-            Building Futures
+            Building Future
           </h1>
         </div>
       </aside>
